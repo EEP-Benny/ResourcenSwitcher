@@ -505,8 +505,8 @@ Func ReadResourcenFolders()
 			_ArrayAdd($Paths, $path)
 			_ArrayAdd($Descriptions, $Description)
 		Next
-		_ArrayAdd($ResourcenFolder_Paths, $Paths)
-		_ArrayAdd($ResourcenFolder_Descriptions, $Descriptions)
+		_ArrayAdd($ResourcenFolder_Paths, $Paths, Default, Default, Default, $ARRAYFILL_FORCE_SINGLEITEM)
+		_ArrayAdd($ResourcenFolder_Descriptions, $Descriptions, Default, Default, Default, $ARRAYFILL_FORCE_SINGLEITEM)
 		DisplayResourcenFolders($v)
 	Next
 EndFunc   ;==>ReadResourcenFolders
