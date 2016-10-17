@@ -207,6 +207,28 @@ GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DO
 GUICtrlSetOnEvent(-1, "Update")
 GUICtrlSetTip(-1, "Im Internet nach Informationen zu neuen EEP- und Programm-Versionen suchen")
 GUICtrlSetImage(-1, @ScriptFullPath, -8, 0)
+
+Global $Dummy_Add = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "ShowGUIResourcenFolderAdd")
+Global $Dummy_Edit = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "ShowGUIResourcenFolderEdit")
+Global $Dummy_Delete = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "DeleteResourcenFolder")
+Global $Dummy_Copy = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "CopyEntry")
+Global $Dummy_Paste = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "PasteEntry")
+
+Local $accelKeys[7][2] = [ _
+		["{F1}", $Label_Help], _
+		["{F5}", $Button_Update], _
+		["^n", $Dummy_Add], _
+		["{F2}", $Dummy_Edit], _
+		["{DEL}", $Dummy_Delete], _
+		["^c", $Dummy_Copy], _
+		["^v", $Dummy_Paste] _
+		]
+GUISetAccelerators($accelKeys)
 #EndRegion - Main GUI
 
 #Region - Resourcen-Folder GUI
@@ -427,7 +449,9 @@ EndFunc   ;==>ShowGUIResourcenFolderAdd
 Func ShowGUIResourcenFolderEdit()
 	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
 	If $SelectedIndex = "" Then
-		MsgBox(48, $ToolName, "Du musst einen Eintrag zum Ändern auswählen", Default, $GUI)
+		If @GUI_CtrlId <> $Dummy_Edit Then
+			MsgBox(48, $ToolName, "Du musst einen Eintrag zum Ändern auswählen", Default, $GUI)
+		EndIf
 		Return
 	EndIf
 	Local $ItemTextArray = _GUICtrlListView_GetItemTextArray($ListViews_ResourcenFolders[$EEPVersionAkt])
@@ -468,7 +492,9 @@ EndFunc   ;==>EditResourcenFolder
 Func DeleteResourcenFolder()
 	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
 	If $SelectedIndex = "" Then
-		MsgBox(48, $ToolName, "Du musst einen Eintrag zum Löschen auswählen", Default, $GUI)
+		If @GUI_CtrlId <> $Dummy_Delete Then
+			MsgBox(48, $ToolName, "Du musst einen Eintrag zum Löschen auswählen", Default, $GUI)
+		EndIf
 		Return
 	EndIf
 	Local $ItemTextArray = _GUICtrlListView_GetItemTextArray($ListViews_ResourcenFolders[$EEPVersionAkt])
@@ -607,8 +633,27 @@ Func ResizeWindow()
 EndFunc   ;==>ResizeWindow
 
 Func Cancel()
-	GUISetState(@SW_HIDE, @GUI_WinHandle)
+	GUISetState(@SW_HIDE, $ResourcenFolder_GUI)
 EndFunc   ;==>Cancel
+
+Func CopyEntry()
+	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
+	If $SelectedIndex = "" Then
+		Return
+	EndIf
+	Local $ItemTextArray = _GUICtrlListView_GetItemTextArray($ListViews_ResourcenFolders[$EEPVersionAkt])
+	Local $ClipText = $ItemTextArray[3] & @CRLF & $ItemTextArray[4]
+	ClipPut($ClipText)
+EndFunc   ;==>CopyEntry
+
+Func PasteEntry()
+	Local $ClipEntry = StringSplit(ClipGet(), @CRLF, $STR_ENTIRESPLIT)
+	If $ClipEntry[0] <> 2 Then Return ;Scheint kein von uns erzeugter Eintrag zu sein
+	; Neuen Eintrag anlegen, vorhandene Funktionen benutzen
+	GUICtrlSetData($ResourcenFolder_Input_Path, $ClipEntry[2])
+	GUICtrlSetData($ResourcenFolder_Input_Description, $ClipEntry[1])
+	AddResourcenFolder()
+EndFunc   ;==>PasteEntry
 
 Func Close()
 	; Wenn es noch keine EEP-Definitionen gibt, wird ganz zu Beginn des Programms die Update-Funktion gestartet
@@ -725,7 +770,7 @@ Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 					Local $item = DllStructGetData($tInfo, "Item")
 					Local $subItem = DllStructGetData($tInfo, "SubItem")
 					If $LastHoveredItem[0] <> $item Or $LastHoveredItem[1] <> $subItem Then
-						If $LastHoveredItem[0] >= 0 Then
+						If $LastHoveredItem[0] >= 0 And $LastHoveredItem[0] < UBound($RegColumnIcon) Then
 							If $LastHoveredItem[1] = 1 Then _GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $LastHoveredItem[0], $LinkColumnIcon[$LastHoveredItem[0]], 1)
 							_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $LastHoveredItem[0], $RegColumnIcon[$LastHoveredItem[0]], 0)
 							_GUICtrlListView_RedrawItems($ListView_ResourcenFolders, $LastHoveredItem[0], $LastHoveredItem[0])
