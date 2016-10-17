@@ -252,7 +252,7 @@ GUIRegisterMsg($WM_NOTIFY, "WM_NOTIFY")
 Func SwitchRegistryTo($Index)
 	;Abbrechen, wenn es keinen Registry-Eintrag gibt
 	If $EEPVersions_HasRegResBase[$EEPVersionAkt] = False Then
-		MsgBox(48, $ToolName, $EEPVersions_Name[$EEPVersionAkt] & " hat keinen Registry-Eintrag für den Resourcenordner, deshalb ist die Umschaltung des Resourcenordners nur per Verlinkung (Klick in die zweite Spalte) möglich.")
+		MsgBox(48, $ToolName, $EEPVersions_Name[$EEPVersionAkt] & " hat keinen Registry-Eintrag für den Resourcenordner, deshalb ist die Umschaltung des Resourcenordners nur per Verlinkung (Klick in die zweite Spalte) möglich.", Default, $GUI)
 		DisplayResourcenFolders($EEPVersionAkt)
 		Return
 	EndIf
@@ -267,7 +267,7 @@ Func SwitchRegistryTo($Index)
 		If @error Then
 			MsgBox(48, $ToolName, "Bitte starte dieses Programm mit Schreibrechten in der Registry, z.B. als Administrator." & @CRLF & _
 					"Die Zugriffsrechte können sich auf folgenden Pfad/Schlüssel beschränken:" & @CRLF & _
-					$EEPRegPath)
+					$EEPRegPath, Default, $GUI)
 			DisplayResourcenFolders($EEPVersionAkt)
 			Return
 		EndIf
@@ -286,7 +286,7 @@ Func SwitchLinkTo($Index)
 	If FileExists($homeRes) And Not DirIsLink(RegRead($EEPRegPath, "Directory"), "Resourcen") Then
 		If MsgBox(20, $ToolName, $homeRes & @CRLF & "ist noch ein vollwertiger Resourcen-Ordner, sodass an " & @CRLF & _
 				"seiner Stelle keine Verknüpfung erstellt werden kann." & @CRLF & @CRLF & _
-				"Soll der Resourcen-Ordner umbenannt werden?" & @CRLF & "Den neuen Pfad kannst du gleich festlegen.") = 6 Then
+				"Soll der Resourcen-Ordner umbenannt werden?" & @CRLF & "Den neuen Pfad kannst du gleich festlegen.", Default, $GUI) = 6 Then
 			$EntryToEdit = _GUICtrlListView_FindInText($ListViews_ResourcenFolders[$EEPVersionAkt], $homeRes) + 1
 			WinSetTitle($ResourcenFolder_GUI, "", "Resourcen-Ordner umbenennen")
 			GUICtrlSetData($ResourcenFolder_Input_Path, $homeRes)
@@ -297,10 +297,10 @@ Func SwitchLinkTo($Index)
 		Return
 	EndIf
 	If Not FileExists($path) Then ;Prüfen, ob der Zielordner existiert
-		MsgBox(48, $ToolName, "Der Ordner" & @CRLF & $path & @CRLF & "existiert nicht und kann daher nicht als Linkziel festgelegt werden.")
+		MsgBox(48, $ToolName, "Der Ordner" & @CRLF & $path & @CRLF & "existiert nicht und kann daher nicht als Linkziel festgelegt werden.", Default, $GUI)
 		Return
 	ElseIf StringInStr(FileGetAttrib($path), "D") = 0 Then ;Prüfen, ob der Zielordner auch wirklich ein Ordner ist.
-		MsgBox(48, $ToolName, $path & @CRLF & "ist kein Ordner und kann daher nicht als Linkziel festgelegt werden.")
+		MsgBox(48, $ToolName, $path & @CRLF & "ist kein Ordner und kann daher nicht als Linkziel festgelegt werden.", Default, $GUI)
 		Return
 	EndIf
 	If FileCreateNTFSLink($path, $homeRes, 1) Then
@@ -315,7 +315,7 @@ Func SwitchLinkTo($Index)
 		EndIf
 		SwitchRegistryTo(-1)
 	Else
-		MsgBox(48, $ToolName, "Um die Verknüpfung zu erstellen, sind Schreibrechte im EEP-Verzeichnis nötig." & @CRLF & "Bitte starte dieses Programm als Administrator oder gewähre die Schreibrechte manuell.")
+		MsgBox(48, $ToolName, "Um die Verknüpfung zu erstellen, sind Schreibrechte im EEP-Verzeichnis nötig." & @CRLF & "Bitte starte dieses Programm als Administrator oder gewähre die Schreibrechte manuell.", Default, $GUI)
 	EndIf
 EndFunc   ;==>SwitchLinkTo
 
@@ -323,7 +323,7 @@ Func RenameResourcenFolder()
 	Local $homeRes = RegRead($EEPRegPath, "Directory") & "\Resourcen"
 	Local $path = GUICtrlRead($ResourcenFolder_Input_Path)
 	If FileExists($path) Then
-		MsgBox(48, $ToolName, "Der gewählte Ordner existiert bereits.")
+		MsgBox(48, $ToolName, "Der gewählte Ordner existiert bereits.", Default, $GUI)
 		Return
 	EndIf
 	DirMove($homeRes, $path)
@@ -595,7 +595,7 @@ Func ResizeWindow()
 	Local $Top = IniRead($IniFileName, $IniSectionSettings, "PosY", (@DesktopHeight - $Height) / 2)
 	WinMove($GUI, "", $Left, $Top, $Width, $Height)
 	If($Left < 0 Or $Left > @DesktopWidth - $Width Or $Top < 0 Or $Top > @DesktopHeight - $Height) And _
-			MsgBox(36, $ToolName, "Das Fenster scheint außerhalb des Bildschirms zu liegen." & @CRLF & "Soll es zurückgeholt werden?") = 6 Then
+			MsgBox(36, $ToolName, "Das Fenster scheint außerhalb des Bildschirms zu liegen." & @CRLF & "Soll es zurückgeholt werden?", Default, $GUI) = 6 Then
 		If $Width > @DesktopWidth Then $Width = @DesktopWidth
 		If $Height > @DesktopHeight Then $Height = @DesktopHeight
 		If $Left < 0 Then $Left = 0
