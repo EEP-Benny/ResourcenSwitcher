@@ -1,5 +1,5 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=ResSwitchmultiple.ico
+#AutoIt3Wrapper_Icon=Icons\ResSwitchmultiple.ico
 #AutoIt3Wrapper_Outfile=ResourcenSwitcher2.exe
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Res_Fileversion=2.2.0.2
@@ -7,17 +7,17 @@
 #AutoIt3Wrapper_Res_Language=1031 ;German (Germany)
 #AutoIt3Wrapper_Res_Comment=
 #AutoIt3Wrapper_Res_Description="Resourcen-Switcher"
-#AutoIt3Wrapper_Res_Icon_Add=folder_add.ico
-#AutoIt3Wrapper_Res_Icon_Add=folder_edit.ico
-#AutoIt3Wrapper_Res_Icon_Add=folder_delete.ico
-#AutoIt3Wrapper_Res_Icon_Add=update.ico
-#AutoIt3Wrapper_Res_Icon_Add=database.ico
-#AutoIt3Wrapper_Res_Icon_Add=database_go.ico
-#AutoIt3Wrapper_Res_Icon_Add=database_link.ico
-#AutoIt3Wrapper_Res_Icon_Add=database_link_go.ico
-#AutoIt3Wrapper_Res_Icon_Add=database_error.ico
-#AutoIt3Wrapper_Res_Icon_Add=link.ico
-#AutoIt3Wrapper_Res_Icon_Add=link_go.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\folder_add.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\folder_edit.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\folder_delete.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\update.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\database.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\database_go.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\database_link.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\database_link_go.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\database_error.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\link.ico
+#AutoIt3Wrapper_Res_Icon_Add=Icons\link_go.ico
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;Todo: 	- Nach Fehlermeldung (Resourcen ist Ordner) Icons aktualisieren/entfernen
