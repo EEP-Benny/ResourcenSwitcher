@@ -9,30 +9,32 @@ AppId={{BB7F91B4-894B-4C5A-BAB1-EF15F96CBC83}
 AppName=ResourcenSwitcher 2
 AppVerName=ResourcenSwitcher 2.2
 AppPublisher=Benjamin Hogl (BH2)
+AppPublisherURL=https://emaps-eep.de
 DefaultDirName={pf}\ResourcenSwitcher2
 DefaultGroupName=ResourcenSwitcher 2
 AllowNoIcons=yes
+SourceDir=D:\Personen\Benjamin\Eigene Programme\ResourcenSwitcher
+OutputDir=.\installer
 OutputBaseFilename=SetupResourcenSwitcher2
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=admin
-SetupIconFile=ResSwitchmultiple.ico
+SetupIconFile=icons\ResSwitchmultiple.ico
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
-Name: "dutch"; MessagesFile: "compiler:Languages\Dutch.isl"
-Name: "french"; MessagesFile: "compiler:Languages\French.isl"
-Name: "german"; MessagesFile: "compiler:Languages\German.isl"
-Name: "polish"; MessagesFile: "compiler:Languages\Polish.isl"
+Name: "dutch";   MessagesFile: "compiler:Languages\Dutch.isl"
+Name: "french";  MessagesFile: "compiler:Languages\French.isl"
+Name: "german";  MessagesFile: "compiler:Languages\German.isl"
+Name: "polish";  MessagesFile: "compiler:Languages\Polish.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "D:\Personen\Benjamin\Eigene Programme\ResourcenSwitcher\ResourcenSwitcher2.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "D:\Personen\Benjamin\Eigene Programme\ResourcenSwitcher\ResourcenSwitcher2.pdf"; DestDir: "{app}"; Flags: ignoreversion isreadme
-Source: "D:\Personen\Benjamin\Eigene Programme\ResourcenSwitcher\ResourcenSwitcher2_fresh.ini"; DestDir: "{app}"; DestName: "ResourcenSwitcher2.ini"; Flags: onlyifdoesntexist
-; NOTE: Don't use "Flags: ignoreversion" on any shared system files
+Source: "build\ResourcenSwitcher2.exe";  DestDir: "{app}"; Flags: ignoreversion
+Source: "doc\ResourcenSwitcher2.pdf";    DestDir: "{app}"; Flags: ignoreversion isreadme
+Source: "config\ResourcenSwitcher2.ini"; DestDir: "{app}"; Flags: onlyifdoesntexist
 
 [Icons]
 Name: "{group}\ResourcenSwitcher 2"; Filename: "{app}\ResourcenSwitcher2.exe"

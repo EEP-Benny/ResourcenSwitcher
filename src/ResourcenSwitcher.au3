@@ -21,7 +21,7 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 ;Todo: 	- Nach Fehlermeldung (Resourcen ist Ordner) Icons aktualisieren/entfernen
-;		- Fensterposition auf Bildschirm zurückholen
+;		- Fensterposition auf Bildschirm zurï¿½ckholen
 ;		- Umbenennen: Neuer Ordner-Button
 
 #Region - Include Parameters
@@ -60,11 +60,11 @@ Global $TxtFilesName = "ResourcenSwitcher 2.txt"
 
 Global $Restart = False ; Flag is set to True if a Restart is wanted
 
-;Schreibrechte prüfen
+;Schreibrechte prï¿½fen
 Local $tempFileName=_TempFile(@ScriptDir,"~")
 Local $tempFile=FileOpen($tempFileName,2)
 If $tempFile=-1 Then
-	MsgBox(48, $ToolName, "Dieses Programm braucht Schreibrechte in seinem eigenen Programmverzeichnis."&@CRLF&"Bitte starte es als Administrator oder gewähre die Schreibrechte manuell."&@CRLF&"Das Programm wird beendet.")
+	MsgBox(48, $ToolName, "Dieses Programm braucht Schreibrechte in seinem eigenen Programmverzeichnis."&@CRLF&"Bitte starte es als Administrator oder gewï¿½hre die Schreibrechte manuell."&@CRLF&"Das Programm wird beendet.")
 	Exit
 EndIf
 FileClose($tempFile)
@@ -72,14 +72,14 @@ FileDelete($tempFileName)
 
 Global $EEPVersionsCount = IniRead($IniFileName, $IniSectionSettings, "EEPVersionsCount", 0)
 If ($EEPVersionsCount < 1) Then
-	If 6 = MsgBox(4+32,$ToolName, "Das Programm kennt noch keine EEP-Versionen, für die Resourcenordner gewechselt werden könnten."&@CRLF&"Soll im Internet danach gesucht werden?") Then
+	If 6 = MsgBox(4+32,$ToolName, "Das Programm kennt noch keine EEP-Versionen, fï¿½r die Resourcenordner gewechselt werden kï¿½nnten."&@CRLF&"Soll im Internet danach gesucht werden?") Then
 		Update()
 	EndIf
 	Exit ;ohne EEP-Versionen kann das Programm nicht arbeiten. Wenn beim Update neue dazugekommen sind, wird vorher neu gestartet.
 
 ;~ 	$EEPVersionsCount = 5
 ;~ 	If Not IniWrite($IniFileName, $IniSectionSettings, "EEPVersionsCount", $EEPVersionsCount) Then
-;~ 		MsgBox(48, $ToolName, "Dieses Programm braucht Schreibrechte in seinem eigenen Programmverzeichnis."&@CRLF&"Bitte starte es als Administrator oder gewähre die Schreibrechte manuell."&@CRLF&"Das Programm wird beendet.")
+;~ 		MsgBox(48, $ToolName, "Dieses Programm braucht Schreibrechte in seinem eigenen Programmverzeichnis."&@CRLF&"Bitte starte es als Administrator oder gewï¿½hre die Schreibrechte manuell."&@CRLF&"Das Programm wird beendet.")
 ;~ 		Exit
 ;~ 	EndIf
 ;~
@@ -110,7 +110,7 @@ Global $EEPVersions_RegPath[1]
 Global $EEPVersions_HasRegResBase[1]
 Global $EEPVersions_Nr[1]
 For $i = 1 To $EEPVersionsCount
-	;Prüfen, ob die EEP-Version (in der Registry) existiert
+	;Prï¿½fen, ob die EEP-Version (in der Registry) existiert
 	RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "Directory")
 	If @error Then
 ;~  		MsgBox(0,$ToolName,IniRead($IniFileName,$IniSectionsVersions&$i,"Name","???")&" gibt es nicht")
@@ -118,7 +118,7 @@ For $i = 1 To $EEPVersionsCount
 		_ArrayAdd($EEPVersions_Name, IniRead($IniFileName, $IniSectionsVersions & $i, "Name", ""))
 		_ArrayAdd($EEPVersions_RegPath, IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""))
 
-		;Prüfen, ob "ResBase" in der Registry steht
+		;Prï¿½fen, ob "ResBase" in der Registry steht
 		RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "ResBase")
 		If @error Then
 			_ArrayAdd($EEPVersions_HasRegResBase, False)
@@ -132,7 +132,7 @@ Next
 ;~ _ArrayDisplay($EEPVersions_HasRegResBase)
 $EEPVersionsCount = UBound($EEPVersions_Name) - 1
 
-Global $EEPVersionAkt = 1 ;wird später per SetVersion neu gesetzt
+Global $EEPVersionAkt = 1 ;wird spï¿½ter per SetVersion neu gesetzt
 
 ;~ Global $IniSectionResourcenFolders = $IniSectionsVersions & $EEPVersionAkt
 
@@ -149,7 +149,7 @@ Global $RegColumnsIcon[$EEPVersionsCount+1]
 Global $RegColumnIcon
 Global $LastHoveredItem[2] = [0, 0]
 
-;Unterschied zwischen Fenstergröße und Clientsize rausfinden
+;Unterschied zwischen Fenstergrï¿½ï¿½e und Clientsize rausfinden
 Local $TestGUI = GUICreate("Test-GUI", 500, 300, Default, Default, BitOR($WS_SIZEBOX, $WS_MINIMIZEBOX))
 Local $Size = WinGetClientSize($TestGUI)
 Global $ClientDiff[2] = [500 - $Size[0], 300 - $Size[1]]
@@ -164,7 +164,7 @@ GUISetOnEvent($GUI_EVENT_CLOSE, "Close")
 ;~ ;Local $SizeBorder=WinGetPos($GUI)
 ;~ ;Local $SizeClient=WinGetClientSize($GUI)
 ;~ ;WinMove($GUI,Default,Default,Default,500,400)
-;~ ;MsgBox(0,"Fenstergröße","Angelegt mit 285x175px"&@CRLF&"Aktueller Clientbereich: "&$SizeClient[0]&"x"&$SizeClient[1]&"px"&@CRLF&"Aktuelle Fenstergröße: "&$SizeBorder[2]&"x"&$SizeBorder[3]&"px")
+;~ ;MsgBox(0,"Fenstergrï¿½ï¿½e","Angelegt mit 285x175px"&@CRLF&"Aktueller Clientbereich: "&$SizeClient[0]&"x"&$SizeClient[1]&"px"&@CRLF&"Aktuelle Fenstergrï¿½ï¿½e: "&$SizeBorder[2]&"x"&$SizeBorder[3]&"px")
 
 ;ImageList mit Pfeil zum Anzeigen des aktuellen Resourcen-Ordners
 Global $ImageList = _GUIImageList_Create(16, 16, 5, 1, 4)
@@ -182,10 +182,10 @@ Global $IconRegError=_GUIImageList_AddIcon($ImageList, @ScriptFullPath, 12)		;4 
 Global $IconLinkAktiv=_GUIImageList_AddIcon($ImageList, @ScriptFullPath, 13)	;5 - Link aktiv
 Global $IconLinkHover=_GUIImageList_AddIcon($ImageList, @ScriptFullPath, 14)	;6 - Link Hover
 
-;ImageList für die EEP-Icons
+;ImageList fï¿½r die EEP-Icons
 Global $ImageList_EEPIcons = _GUIImageList_Create(16, 16, 4, 1)
 
-;Tabs zum Auswählen der EEP-Version
+;Tabs zum Auswï¿½hlen der EEP-Version
 Global $TabView_EEPVersions = GUICtrlCreateTab(10, 10, 265, 130)
 GUICtrlSetResizing(-1, $GUI_DOCKBORDERS)
 ;~ GUISetOnEvent(-1, "Close")
@@ -210,37 +210,37 @@ For $i = 1 To $EEPVersionsCount
 
 	GUISetCoord(0, 0)
 
-	;Liste zum Auswählen des Resourcenordners
+	;Liste zum Auswï¿½hlen des Resourcenordners
 	_ArrayAdd($ListViews_ResourcenFolders, GUICtrlCreateListView("||Beschreibung|Pfad", 20, 40, 210, 85, BitOR($GUI_SS_DEFAULT_LISTVIEW, $LVS_NOSORTHEADER)))
 	_GUICtrlListView_SetExtendedListViewStyle($ListViews_ResourcenFolders[$i], BitOR($LVS_EX_FULLROWSELECT, $LVS_EX_SUBITEMIMAGES))
 	GUICtrlSetResizing(-1, $GUI_DOCKBORDERS)
 	_GUICtrlListView_SetImageList($ListViews_ResourcenFolders[$i], $ImageList, 1)
 
-	;Button Hinzufügen
-	_ArrayAdd($Buttons_Add, GUICtrlCreateButton("&Hinzufügen", 220, 0, 25, 25, $BS_ICON))
+	;Button Hinzufï¿½gen
+	_ArrayAdd($Buttons_Add, GUICtrlCreateButton("&Hinzufï¿½gen", 220, 0, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent($Buttons_Add[$i], "ShowGUIResourcenFolderAdd")
-	GUICtrlSetTip(-1, "Neuen Resourcen-Ordner zur Liste hinzufügen")
+	GUICtrlSetTip(-1, "Neuen Resourcen-Ordner zur Liste hinzufï¿½gen")
 	GUICtrlSetImage(-1, @ScriptFullPath, -5, 0)
 ;~ 	;_GUICtrlButton_SetImageList($Buttons_Add[$i],$ImageList,4)
 
-	;Button Ändern
-	_ArrayAdd($Buttons_Edit, GUICtrlCreateButton("Ä&ndern", 0, 30, 25, 25, $BS_ICON))
+	;Button ï¿½ndern
+	_ArrayAdd($Buttons_Edit, GUICtrlCreateButton("ï¿½&ndern", 0, 30, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent($Buttons_Edit[$i], "ShowGUIResourcenFolderEdit")
-	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner bearbeiten")
+	GUICtrlSetTip(-1, "Ausgewï¿½hlten Resourcen-Ordner bearbeiten")
 	GUICtrlSetImage(-1, @ScriptFullPath, -6, 0)
 
-	;Button Löschen
-	_ArrayAdd($Buttons_Delete, GUICtrlCreateButton("&Löschen", 0, 30, 25, 25, $BS_ICON))
+	;Button Lï¿½schen
+	_ArrayAdd($Buttons_Delete, GUICtrlCreateButton("&Lï¿½schen", 0, 30, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent($Buttons_Delete[$i], "DeleteResourcenFolder")
-	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner aus der Liste entfernen")
+	GUICtrlSetTip(-1, "Ausgewï¿½hlten Resourcen-Ordner aus der Liste entfernen")
 	GUICtrlSetImage(-1, @ScriptFullPath, -7, 0)
 
 Next
 
-GUICtrlCreateTabItem("") ;Erstellung der Tabs abschließen
+GUICtrlCreateTabItem("") ;Erstellung der Tabs abschlieï¿½en
 
 ;Label Hilfe
 Global $Label_Help = GUICtrlCreateLabel("Hilfe", -20, -92, 25, 15, $GUI_SS_DEFAULT_LABEL + $SS_RIGHT)
@@ -309,17 +309,17 @@ GUICtrlSetOnEvent($ResourcenFolder_Button_Cancel, "Cancel")
 
 ReadResourcenFolders()
 SetVersion(IniRead($IniFileName, $IniSectionSettings, "SelectedEEPVersion", 1)) ;Zuletzt aktive Version einstellen
-GUICtrlSetState($TabItems_EEPVersions[$EEPVersionAkt],$GUI_SHOW) ;und den entsprechenden Tab vorwählen
+GUICtrlSetState($TabItems_EEPVersions[$EEPVersionAkt],$GUI_SHOW) ;und den entsprechenden Tab vorwï¿½hlen
 GUISetState(@SW_SHOW, $GUI)
 ResizeWindow()
-GUIRegisterMsg($WM_GETMINMAXINFO, "WM_NOTIFY") ; Minimale Größe festlegen
+GUIRegisterMsg($WM_GETMINMAXINFO, "WM_NOTIFY") ; Minimale Grï¿½ï¿½e festlegen
 GUIRegisterMsg($WM_NOTIFY, "WM_NOTIFY")
 
 #Region Functions
 ;~ Func SwitchResourcenFolder()
 ;~ 	Local $Index = _GUICtrlListView_GetSelectedIndices($ListView_ResourcenFolders, False)
 ;~ 	If $Index = "" Then
-;~ 		MsgBox(48, $ToolName, "Du musst einen Resourcen-Ordner zum Wechseln auswählen", Default, $GUI)
+;~ 		MsgBox(48, $ToolName, "Du musst einen Resourcen-Ordner zum Wechseln auswï¿½hlen", Default, $GUI)
 ;~ 		Return
 ;~ 	EndIf
 ;~ 	SwitchRegistryTo($Index)
@@ -342,7 +342,7 @@ Func SwitchRegistryTo($Index)
 		RegWrite($EEPRegPath, "ResBase", "REG_SZ", $path)
 		If @error Then
 			MsgBox(48, $ToolName, "Bitte starte dieses Programm mit Schreibrechten in der Registry, z.B. als Administrator." & @CRLF & _
-					"Die Zugriffsrechte können sich auf folgenden Pfad/Schlüssel beschränken:" & @CRLF & _
+					"Die Zugriffsrechte kï¿½nnen sich auf folgenden Pfad/Schlï¿½ssel beschrï¿½nken:" & @CRLF & _
 					$EEPRegPath)
 			DisplayResourcenFolders($EEPVersionAkt)
 			Return
@@ -363,7 +363,7 @@ Func SwitchLinkTo($Index)
 	Local $homeRes = RegRead($EEPRegPath, "Directory") & "\Resourcen"
 	If FileExists($homeRes) And Not DirIsLink(RegRead($EEPRegPath, "Directory"), "Resourcen") Then
 		If MsgBox(20, $ToolName, $homeRes &@CRLF& "ist noch ein vollwertiger Resourcen-Ordner, sodass an " & @CRLF & _
-		  "seiner Stelle keine Verknüpfung erstellt werden kann."&@CRLF&@CRLF& _
+		  "seiner Stelle keine Verknï¿½pfung erstellt werden kann."&@CRLF&@CRLF& _
 		  "Soll der Resourcen-Ordner umbenannt werden?"&@CRLF&"Den neuen Pfad kannst du gleich festlegen.")=6 Then
 ;~ 			$EntryToEdit = _ArraySearch($ResourcenFolder_Paths[$EEPVersionAkt],$homeRes)
 			$EntryToEdit = _GUICtrlListView_FindInText($ListViews_ResourcenFolders[$EEPVersionAkt],$homeRes)+1
@@ -376,10 +376,10 @@ Func SwitchLinkTo($Index)
 		EndIf
 		Return
 	EndIf
-	If Not FileExists($path) Then ;Prüfen, ob der Zielordner existiert
+	If Not FileExists($path) Then ;Prï¿½fen, ob der Zielordner existiert
 		MsgBox(48, $ToolName, "Der Ordner"&@CRLF&$path&@CRLF&"existiert nicht und kann daher nicht als Linkziel festgelegt werden.")
 		Return
-	ElseIf StringInStr(FileGetAttrib($path), "D") = 0 Then ;Prüfen, ob der Zielordner auch wirklich ein Ordner ist.
+	ElseIf StringInStr(FileGetAttrib($path), "D") = 0 Then ;Prï¿½fen, ob der Zielordner auch wirklich ein Ordner ist.
 		MsgBox(48, $ToolName, $path&@CRLF&"ist kein Ordner und kann daher nicht als Linkziel festgelegt werden.")
 		Return
 	EndIf
@@ -387,7 +387,7 @@ Func SwitchLinkTo($Index)
 		_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $CurrResFolderLink[$EEPVersionAkt], $IconKeins, 1)
 ;~ 		_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $Index, 2, 1)
 		$CurrResFolderLink[$EEPVersionAkt] = $Index
-		If LinkGetRealDir($homeRes) <> $path Then ;Falls der Link von LinkGetRealDir nicht richtig aufgelöst werden kann, den Pfad in eine versteckte Textdatei schreiben
+		If LinkGetRealDir($homeRes) <> $path Then ;Falls der Link von LinkGetRealDir nicht richtig aufgelï¿½st werden kann, den Pfad in eine versteckte Textdatei schreiben
 			If FileExists($homeRes & "\" & $TxtFilesName) Then FileSetAttrib($homeRes & "\" & $TxtFilesName, "-H")
 			Local $file = FileOpen($homeRes & "\" & $TxtFilesName, 2)
 			FileWrite($homeRes & "\" & $TxtFilesName, $path)
@@ -396,7 +396,7 @@ Func SwitchLinkTo($Index)
 		EndIf
 		SwitchRegistryTo(-1)
 	Else
-		MsgBox(48, $ToolName, "Um die Verknüpfung zu erstellen, sind Schreibrechte im EEP-Verzeichnis nötig."&@CRLF&"Bitte starte dieses Programm als Administrator oder gewähre die Schreibrechte manuell.")
+		MsgBox(48, $ToolName, "Um die Verknï¿½pfung zu erstellen, sind Schreibrechte im EEP-Verzeichnis nï¿½tig."&@CRLF&"Bitte starte dieses Programm als Administrator oder gewï¿½hre die Schreibrechte manuell.")
 	EndIf
 EndFunc   ;==>SwitchLinkTo
 
@@ -404,7 +404,7 @@ Func RenameResourcenFolder()
 	Local $homeRes = RegRead($EEPRegPath, "Directory") & "\Resourcen"
 	Local $path = GUICtrlRead($ResourcenFolder_Input_Path)
 	If FileExists($path) Then
-		MsgBox(48,$ToolName,"Der gewählte Ordner existiert bereits.")
+		MsgBox(48,$ToolName,"Der gewï¿½hlte Ordner existiert bereits.")
 		Return
 	EndIf
 	DirMove($homeRes,$path)
@@ -425,7 +425,7 @@ Func Update()
 	If $url="" Then
 		$url="http://emaps-eep.de/files?ResourcenSwitcherUpdate.ini"
 		If Not IniWrite($IniFileName,$IniSectionSettings,"UpdateURL",$url) Then
-			MsgBox(48, $ToolName, "Dieses Programm braucht Schreibrechte in seinem eigenen Programmverzeichnis."&@CRLF&"Bitte starte es als Administrator oder gewähre die Schreibrechte manuell."&@CRLF&"Das Programm wird beendet.")
+			MsgBox(48, $ToolName, "Dieses Programm braucht Schreibrechte in seinem eigenen Programmverzeichnis."&@CRLF&"Bitte starte es als Administrator oder gewï¿½hre die Schreibrechte manuell."&@CRLF&"Das Programm wird beendet.")
 			Exit
 		EndIf
 	ElseIf StringInStr($url,"emaps.de.vu") Then
@@ -441,8 +441,8 @@ Func Update()
 	Local $UpdateVersionsCount = IniRead($tempFileName,"General","EEPVersionsCount",-1)
 	Local $UpdateMessage=""
 	If $UpdateVersionsCount<=0 Then
-		$UpdateMessage="Die heruntergeladene Datei enthält keine Informationen zu EEP-Versionen"
-		;MsgBox(48,$ToolName,"Beim Update ist ein Fehler aufgetreten."&@CRLF&"Die heruntergeladene Datei enthält keine Informationen zu EEP-Versionen")
+		$UpdateMessage="Die heruntergeladene Datei enthï¿½lt keine Informationen zu EEP-Versionen"
+		;MsgBox(48,$ToolName,"Beim Update ist ein Fehler aufgetreten."&@CRLF&"Die heruntergeladene Datei enthï¿½lt keine Informationen zu EEP-Versionen")
 	Else
 		Local $NewVersions[1] = [0]
 		For $i=1 To $UpdateVersionsCount
@@ -464,7 +464,7 @@ Func Update()
 
 			Local $UpdateName = IniRead($tempFileName,"EEPVersion"&$i,"Name","")
 			Local $Section = IniReadSection($tempFileName,"EEPVersion"&$i)
-			_ArrayDelete($Section,0) ; IniReadSection gibt noch die Anzahl zurück, die braucht IniWriteSection nicht
+			_ArrayDelete($Section,0) ; IniReadSection gibt noch die Anzahl zurï¿½ck, die braucht IniWriteSection nicht
 			IniWriteSection($IniFileName, $IniSectionsVersions & $CurrentVersionsCount, $Section, 0)
 
 			$NewVersions[0]+=1
@@ -474,10 +474,10 @@ Func Update()
 			$UpdateMessage="Es sind keine neuen EEP-Versionen bekannt."
 			;MsgBox(64,$ToolName,"Es sind keine neuen EEP-Versionen bekannt")
 		Else
-			$UpdateMessage="Es wurden "&$NewVersions[0]&" neue EEP-Versionen zur Liste hinzugefügt:"&@CRLF&_ArrayToString($NewVersions,@CRLF,1)
-			;MsgBox(64,$ToolName,"Es wurden "&$NewVersions[0]&" neue EEP-Versionen zur Liste hinzugefügt:"&@CRLF&_ArrayToString($NewVersions,@CRLF,1))
+			$UpdateMessage="Es wurden "&$NewVersions[0]&" neue EEP-Versionen zur Liste hinzugefï¿½gt:"&@CRLF&_ArrayToString($NewVersions,@CRLF,1)
+			;MsgBox(64,$ToolName,"Es wurden "&$NewVersions[0]&" neue EEP-Versionen zur Liste hinzugefï¿½gt:"&@CRLF&_ArrayToString($NewVersions,@CRLF,1))
 
-			;Neu starten, damit die neuen Einträge erkannt werden
+			;Neu starten, damit die neuen Eintrï¿½ge erkannt werden
 			$Restart=True
 			;Close()
 		EndIf
@@ -494,7 +494,7 @@ Func Update()
 				"Die neue Version kann unter"&@CRLF& _
 				$url&@CRLF& _
 				"heruntergeladen werden."&@CRLF&@CRLF& _
-				"Soll die Seite jetzt geöffnet werden?") Then
+				"Soll die Seite jetzt geï¿½ffnet werden?") Then
 			ShellExecute($url)
 		EndIf
 	Else
@@ -505,7 +505,7 @@ Func Update()
 EndFunc
 
 Func ShowGUIResourcenFolderAdd()
-	WinSetTitle($ResourcenFolder_GUI, "", "Resourcen-Ordner hinzufügen")
+	WinSetTitle($ResourcenFolder_GUI, "", "Resourcen-Ordner hinzufï¿½gen")
 	GUICtrlSetData($ResourcenFolder_Input_Path, "")
 	GUICtrlSetData($ResourcenFolder_Input_Description, "")
 	GUICtrlSetOnEvent($ResourcenFolder_Button_OK, "AddResourcenFolder")
@@ -515,7 +515,7 @@ EndFunc   ;==>ShowGUIResourcenFolderAdd
 Func ShowGUIResourcenFolderEdit()
 	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
 	If $SelectedIndex = "" Then
-		MsgBox(48, $ToolName, "Du musst einen Eintrag zum Ändern auswählen", Default, $GUI)
+		MsgBox(48, $ToolName, "Du musst einen Eintrag zum ï¿½ndern auswï¿½hlen", Default, $GUI)
 		Return
 	EndIf
 	Local $ItemTextArray = _GUICtrlListView_GetItemTextArray($ListViews_ResourcenFolders[$EEPVersionAkt])
@@ -556,15 +556,15 @@ EndFunc   ;==>EditResourcenFolder
 Func DeleteResourcenFolder()
 	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
 	If $SelectedIndex = "" Then
-		MsgBox(48, $ToolName, "Du musst einen Eintrag zum Löschen auswählen", Default, $GUI)
+		MsgBox(48, $ToolName, "Du musst einen Eintrag zum Lï¿½schen auswï¿½hlen", Default, $GUI)
 		Return
 	EndIf
 	Local $ItemTextArray = _GUICtrlListView_GetItemTextArray($ListViews_ResourcenFolders[$EEPVersionAkt])
 	If $ItemTextArray[4] = RegRead($EEPVersions_RegPath[$EEPVersionAkt], "ResBase") Then
-		MsgBox(48, $ToolName, "Du kannst nicht den aktuellen Resourcen-Ordner löschen", Default, $GUI)
+		MsgBox(48, $ToolName, "Du kannst nicht den aktuellen Resourcen-Ordner lï¿½schen", Default, $GUI)
 		Return
 	EndIf
-	If MsgBox(292, $ToolName, "Soll dieser Resourcen-Ordner wirklich aus der Liste gelöscht werden?" & @CRLF & $ItemTextArray[3] & @TAB & $ItemTextArray[4], Default, $GUI) = 6 Then
+	If MsgBox(292, $ToolName, "Soll dieser Resourcen-Ordner wirklich aus der Liste gelï¿½scht werden?" & @CRLF & $ItemTextArray[3] & @TAB & $ItemTextArray[4], Default, $GUI) = 6 Then
 		Local $Paths = $ResourcenFolder_Paths[$EEPVersionAkt]
 		Local $Descriptions = $ResourcenFolder_Descriptions[$EEPVersionAkt]
 		_ArrayDelete($Paths, $SelectedIndex + 1)
@@ -576,7 +576,7 @@ Func DeleteResourcenFolder()
 EndFunc   ;==>DeleteResourcenFolder
 
 Func BrowsePath()
-	Local $Folder = FileSelectFolder("Resourcen-Ordner wählen", "", 4, RegRead($EEPRegPath, "Directory"), $ResourcenFolder_GUI)
+	Local $Folder = FileSelectFolder("Resourcen-Ordner wï¿½hlen", "", 4, RegRead($EEPRegPath, "Directory"), $ResourcenFolder_GUI)
 	If $Folder Then
 		GUICtrlSetData($ResourcenFolder_Input_Path, $Folder)
 	EndIf
@@ -633,7 +633,7 @@ Func DisplayResourcenFolders($v = 1)
 		Local $Paths = $ResourcenFolder_Paths[$v]
 		GUICtrlCreateListViewItem("||" & $Descriptions[$i] & "|" & $Paths[$i], $ListViews_ResourcenFolders[$v])
 		If StringInStr(FileGetAttrib($Paths[$i]), "D") = 0 Then
-			GUICtrlSetColor(-1, 0xCCCCCC)		;Nicht vorhandene Ordner grau färben
+			GUICtrlSetColor(-1, 0xCCCCCC)		;Nicht vorhandene Ordner grau fï¿½rben
 		EndIf
 		_ArrayAdd($RegIcons,$IconKeins)
 		_ArrayAdd($LinkIcons,$IconKeins)
@@ -709,7 +709,7 @@ Func ResizeWindow()
 	Local $Top = IniRead($IniFileName, $IniSectionSettings, "PosY", (@DesktopHeight - $Height) / 2)
 	WinMove($GUI, "", $Left, $Top, $Width, $Height)
 	If ($Left<0 Or $Left>@DesktopWidth-$Width Or $Top<0 Or $Top>@DesktopHeight-$Height) And _
-		MsgBox(36,$ToolName,"Das Fenster scheint außerhalb des Bildschirms zu liegen." & @CRLF & "Soll es zurückgeholt werden?")=6 Then
+		MsgBox(36,$ToolName,"Das Fenster scheint auï¿½erhalb des Bildschirms zu liegen." & @CRLF & "Soll es zurï¿½ckgeholt werden?")=6 Then
 		If $Width>@DesktopWidth Then $Width=@DesktopWidth
 		If $Height>@DesktopHeight Then $Height=@DesktopHeight
 		If $Left<0 Then $Left=0
@@ -899,7 +899,7 @@ Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 
 	EndSwitch
 	Switch $uMsg
-		Case $WM_GETMINMAXINFO ; Die Fenstergröße abfragen, minimale Größe fürs verkleinern setzen
+		Case $WM_GETMINMAXINFO ; Die Fenstergrï¿½ï¿½e abfragen, minimale Grï¿½ï¿½e fï¿½rs verkleinern setzen
 			Local $MinMax = DllStructCreate("int ptReserved[2]; int ptMaxSize[2]; int ptMaxPosition[2]; int ptMinTrackSize[2]; int ptMaxTrackSize[2];", $lParam) ; DLLStruct auf den Pointer erstellen, zum bearbeiten der Werte
 			DllStructSetData($MinMax, 4, 500, 1) ; Minimal 500 Pixel breit
 			DllStructSetData($MinMax, 4, 180, 2) ; Minimal 180 Pixel hoch
