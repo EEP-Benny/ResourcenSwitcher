@@ -2,8 +2,8 @@
 #AutoIt3Wrapper_Icon=..\icons\ResSwitchmultiple.ico
 #AutoIt3Wrapper_Outfile=..\build\ResourcenSwitcher2.exe
 #AutoIt3Wrapper_Compression=4
-#AutoIt3Wrapper_Res_Fileversion=2.2.0.2
-#AutoIt3Wrapper_Res_FileVersion_AutoIncrement=P
+#AutoIt3Wrapper_Res_Fileversion=2.3.0.0
+;~ #AutoIt3Wrapper_Res_FileVersion_AutoIncrement=P
 #AutoIt3Wrapper_Res_Language=1031 ;German (Germany)
 #AutoIt3Wrapper_Res_Comment=
 #AutoIt3Wrapper_Res_Description="Resourcen-Switcher"
@@ -19,10 +19,6 @@
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\link.ico
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\link_go.ico
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-
-;Todo: 	- Nach Fehlermeldung (Resourcen ist Ordner) Icons aktualisieren/entfernen
-;		- Fensterposition auf Bildschirm zurückholen
-;		- Umbenennen: Neuer Ordner-Button
 
 #Region - Include Parameters
 #include <Constants.au3>
@@ -48,7 +44,7 @@ Opt("MustDeclareVars", 1)
 #EndRegion - Options
 
 
-Global $ToolName = "ResourcenSwitcher 2.2"
+Global $ToolName = "ResourcenSwitcher 2.3"
 Global $EEPRegPath
 Global $AppFileName = StringReplace(StringReplace(@ScriptFullPath, ".au3", "", -1), ".exe", "", -1)
 
