@@ -611,7 +611,7 @@ Func DisplayResourcenFolders($v = 1)
 EndFunc   ;==>DisplayResourcenFolders
 
 Func ResizeWindow()
-	Local $Width = IniRead($IniFileName, $IniSectionSettings, "Width", 680)
+	Local $Width = IniRead($IniFileName, $IniSectionSettings, "Width", 760)
 	Local $Height = IniRead($IniFileName, $IniSectionSettings, "Height", 180)
 	Local $Left = IniRead($IniFileName, $IniSectionSettings, "PosX", (@DesktopWidth - $Width) / 2)
 	Local $Top = IniRead($IniFileName, $IniSectionSettings, "PosY", (@DesktopHeight - $Height) / 2)
@@ -667,7 +667,7 @@ Func Close()
 		For $v = 1 To $EEPVersionsCount
 			Local $Paths = $ResourcenFolder_Paths[$v]
 			Local $Descriptions = $ResourcenFolder_Descriptions[$v]
-			Local $Data[5 + UBound($Descriptions) * 2][2]
+			Local $Data[3 + UBound($Descriptions) * 2][2]
 			$Data[1][0] = "Name"
 			$Data[1][1] = '"' & IniRead($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$v], "Name", "") & '"'
 			$Data[2][0] = "RegPath"
