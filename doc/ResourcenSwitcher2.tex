@@ -1,0 +1,51 @@
+\documentclass[a4paper,12pt,headings=normal]{scrreprt}
+\usepackage[T1]{fontenc}
+\usepackage[utf8x]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[margin=2cm,head=0.625cm,headsep=1cm,includehead,includefoot]{geometry}
+\usepackage{lastpage}
+\usepackage{parskip}
+%\usepackage{microtype}
+\usepackage[dvipsnames,table]{xcolor}
+\usepackage[colorlinks=true,linkcolor=Black,citecolor=MidnightBlue,urlcolor=MidnightBlue]{hyperref}
+\usepackage{tikz}
+
+\usepackage{helvet} % Schönere SansSerif-Schrift
+\usepackage{times}  % Schönere Serif-Schrift
+\renewcommand*{\raggedsection}{\centering}
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\chead{\begin{tikzpicture}[remember picture,overlay]
+\node [inner sep=0,outer sep=0,below] 
+      at (current page.north){\includegraphics[width=\paperwidth]{"D:/Personen/Benjamin/Eigene Modelle/VorlageAnleitungenKopfzeile".jpg}};
+\end{tikzpicture}}
+\rhead{}
+\lfoot{\today}
+\cfoot{TODO: Titel}
+\rfoot{{Seite \thepage} von \pageref{LastPage}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+\title{ResourcenSwitcher 2.2}
+\author{Benjamin Hogl}
+
+\begin{document}
+\chapter*{ResourcenSwitcher 2.2}
+\thispagestyle{fancy}
+\section*{Einsatzgebiet}
+Mit diesem Programm ist es möglich, mehrere Resourcen-Ordner zu verwalten, zum Beispiel ein Ordner nur mit der Grundausstattung von EEP und einen anderen mit allen Modellen. Mit dem ResourcenSwitcher 2 gibt es zwei verschiedene Möglichkeiten der Umschaltung, die auch gleichzeitig angewendet werden können:
+
+
+
+\subsection*{1. Registry-Änderung}
+Hierbei wird einfach nur ein Registry-Eintrag geändert, der angibt, wo der Resourcen-Ordner liegt. Dieser Registry-Eintrag wird zwar von EEP und vielen Zusatztools verwendet, vom Modellinstaller aber nicht. Ein weiterer Nachteil ist, dass mit F12 erstellte Screenshots nicht mehr im EEP-Ordner unter 00000001.bmp gespeichert werden, sondern teilweise einen Präfix bekommen. EEP scheint den Speicherort aus dem Pfad des Resourcen-Ordners abzuleiten, und entfernt die letzten 10 Buchstaben (so wird \texttt{EEP?/Resourcen/} zu \texttt{EEP?/00000001.bmp}, aber \texttt{EEP?/Resourcen\_Grundversion/} zu \texttt{EEP?/Resourcen\_Gru00000001.bmp}).
+
+Diese Möglichkeit gibt es ab EEP11 nicht mehr.
+
+\subsection*{2. Verlinkung}
+Seit Windows 2000 gibt es bei Windows sogenannte Abzweigungspunkte (auch Junctions genannt). Diese leiten alle Dateiaufrufe innerhalb eines Verzeichnisses automatisch auf ein anderes um, wobei der Benutzer bzw. das Programm nichts bemerkt. Auf diese Weise kann der Modellinstaller weiterhin seine Modelle nach \texttt{/EEP?/Resourcen/IrgendeinUnterordner/} kopieren, tatsächlich landen diese aber in einem völlig anderen Ordner. Durch einfaches Ändern der Verlinkung kann man den Resourcen-Ordner leicht austauschen, ohne ihn verschieben oder umbenennen zu müssen.
+
+
+\end{document}
