@@ -270,7 +270,9 @@ GUIRegisterMsg($WM_NOTIFY, "WM_NOTIFY")
 Func SwitchRegistryTo($Index)
 	;Abbrechen, wenn es keinen Registry-Eintrag gibt
 	If $EEPVersions_HasRegResBase[$EEPVersionAkt] = False Then
-		MsgBox(48, $ToolName, $EEPVersions_Name[$EEPVersionAkt] & " hat keinen Registry-Eintrag für den Resourcenordner, deshalb ist die Umschaltung des Resourcenordners nur per Verlinkung (Klick in die zweite Spalte) möglich.", Default, $GUI)
+		If $Index >= 0 Then ;Meldung anzeigen, wenn Registry-Umschaltung angeklickt wurde
+			MsgBox(48, $ToolName, $EEPVersions_Name[$EEPVersionAkt] & " hat keinen Registry-Eintrag für den Resourcenordner, deshalb ist die Umschaltung des Resourcenordners nur per Verlinkung (Klick in die zweite Spalte) möglich.", Default, $GUI)
+		EndIf
 		DisplayResourcenFolders($EEPVersionAkt)
 		Return
 	EndIf
