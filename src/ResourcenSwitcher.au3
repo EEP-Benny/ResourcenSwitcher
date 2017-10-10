@@ -814,6 +814,7 @@ Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 EndFunc   ;==>WM_NOTIFY
 
 Func SetVersion($Number = -1)
+	If $Number > $EEPVersionsCount Then $Number = $EEPVersionsCount
 	$EEPVersionAkt = $Number
 	$ListView_ResourcenFolders = $ListViews_ResourcenFolders[$Number]
 	$EEPRegPath = $EEPVersions_RegPath[$Number]
