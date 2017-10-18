@@ -74,6 +74,7 @@ If($EEPVersionsCount < 1) Then
 	Exit ;ohne EEP-Versionen kann das Programm nicht arbeiten. Wenn beim Update neue dazugekommen sind, wird vorher neu gestartet.
 EndIf
 
+Global $HiddenEEPVersions_Nr[1]
 Global $EEPVersions_Name[1]
 Global $EEPVersions_RegPath[1]
 Global $EEPVersions_HasRegResBase[1]
@@ -81,24 +82,29 @@ Global $EEPVersions_Nr[1]
 For $i = 1 To $EEPVersionsCount
 	;Prüfen, ob die EEP-Version (in der Registry) existiert
 	RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "Directory")
-	If Not @error And IniRead($IniFileName, $IniSectionsVersions & $i, "Hidden", "0")=="0" Then
-		_ArrayAdd($EEPVersions_Name, IniRead($IniFileName, $IniSectionsVersions & $i, "Name", ""))
-		_ArrayAdd($EEPVersions_RegPath, IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""))
-
-		;Prüfen, ob "ResBase" in der Registry steht
-		RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "ResBase")
-		If @error Then
-			_ArrayAdd($EEPVersions_HasRegResBase, False)
-		Else
-			_ArrayAdd($EEPVersions_HasRegResBase, True)
-		EndIf
-
-		_ArrayAdd($EEPVersions_Nr, $i)
+	If @error Then ContinueLoop
+	If IniRead($IniFileName, $IniSectionsVersions & $i, "Hidden", "0") <> "0" Then
+		_ArrayAdd($HiddenEEPVersions_Nr, $i)
+		ContinueLoop
 	EndIf
+	_ArrayAdd($EEPVersions_Name, IniRead($IniFileName, $IniSectionsVersions & $i, "Name", ""))
+	_ArrayAdd($EEPVersions_RegPath, IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""))
+
+	;Prüfen, ob "ResBase" in der Registry steht
+	RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "ResBase")
+	If @error Then
+		_ArrayAdd($EEPVersions_HasRegResBase, False)
+	Else
+		_ArrayAdd($EEPVersions_HasRegResBase, True)
+	EndIf
+
+	_ArrayAdd($EEPVersions_Nr, $i)
 Next
 $EEPVersionsCount = UBound($EEPVersions_Name) - 1
+Global $HiddenEEPVersionsCount = UBound($HiddenEEPVersions_Nr) - 1
 
 Global $EEPVersionAkt = 1 ;wird später per SetVersion neu gesetzt
+Global $EEPVersionRightClicked = -1 ;wird bei einem Rechtsklick auf die Tabs gesetzt, damit das Kontextmenü weiß, wofür es gelten soll
 
 Global $ResourcenFolder_Descriptions[1]
 Global $ResourcenFolder_Paths[1]
@@ -188,6 +194,27 @@ For $i = 1 To $EEPVersionsCount
 Next
 
 GUICtrlCreateTabItem("") ;Erstellung der Tabs abschließen
+
+;Kontextmenü für Tabs zum Verstecken
+Global $ContextMenu_Tabs = GUICtrlCreateContextMenu($TabView_EEPVersions)
+
+Global $ContextMenuItem_Hide = GUICtrlCreateMenuItem("Diese EEP-Version ausblenden", $ContextMenu_Tabs)
+GUICtrlSetOnEvent(-1, "HideTab")
+If $EEPVersionsCount <= 1 Then
+	GUICtrlSetState($ContextMenuItem_Hide, $GUI_DISABLE)
+	GUICtrlSetData($ContextMenuItem_Hide, "Die letzte EEP-Version kann nicht ausgeblendet werden")
+EndIf
+
+GUICtrlCreateMenuItem("", $ContextMenu_Tabs) ; Separator
+
+Global $ContextMenuItem_Unhide = GUICtrlCreateMenuItem("Alle " & $HiddenEEPVersionsCount & " ausgeblendeten EEP-Versionen wieder einblenden", $ContextMenu_Tabs)
+GUICtrlSetOnEvent(-1, "UnhideTabs")
+If $HiddenEEPVersionsCount = 1 Then
+	GUICtrlSetData($ContextMenuItem_Unhide, "Eine ausgeblendete EEP-Version wieder einblenden")
+ElseIf $HiddenEEPVersionsCount < 1 Then
+	GUICtrlSetState($ContextMenuItem_Unhide, $GUI_DISABLE)
+	GUICtrlSetData($ContextMenuItem_Unhide, "Es gibt keine ausgeblendeten Versionen zum wieder einblenden")
+EndIf
 
 ;Label Hilfe
 Global $Label_Help = GUICtrlCreateLabel("Hilfe", -20, -92, 25, 15, $GUI_SS_DEFAULT_LABEL + $SS_RIGHT)
@@ -435,6 +462,22 @@ Func Update()
 	FileDelete($tempFileName)
 	If $Restart Then Close() ;Wenn ein Neustart erforderlich ist, dann tue das jetzt
 EndFunc   ;==>Update
+
+Func HideTab()
+	If $EEPVersionRightClicked < 1 Then Return ;Es wurde nichts angeklickt!?
+	If $EEPVersionsCount <= 1 Then Return ;Die letzte Version soll nicht versteckt werden
+	IniWrite($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$EEPVersionRightClicked], "Hidden", 1)
+	$Restart = True
+	Close() ;Neu starten, damit die Hidden-Flags neu eingelesen werden
+EndFunc   ;==>HideTab
+
+Func UnhideTabs()
+	For $i = 1 To $HiddenEEPVersionsCount
+		IniWrite($IniFileName, $IniSectionsVersions & $HiddenEEPVersions_Nr[$i], "Hidden", 0)
+	Next
+	$Restart = True
+	Close() ;Neu starten, damit die Hidden-Flags neu eingelesen werden
+EndFunc   ;==>UnhideTabs
 
 Func ShowGUIResourcenFolderAdd()
 	WinSetTitle($ResourcenFolder_GUI, "", "Resourcen-Ordner hinzufügen")
@@ -803,6 +846,14 @@ Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 					SetVersion(GUICtrlRead($TabView_EEPVersions) + 1)
 				Case -552
 					If BitAND(WinGetState($ResourcenFolder_GUI), 2) = 2 Then Return 1
+				Case $NM_RCLICK ;Rausfinden, auf welchen Tab geklickt wurde, damit die Kontextmenü-Aktion für diesen Tab ausgeführt werden kann
+					Local $tPOINT = _WinAPI_GetMousePos(True, $GUI)
+					Local $iX = DllStructGetData($tPOINT, "X")
+					Local $iY = DllStructGetData($tPOINT, "Y")
+					Local $aPos = ControlGetPos($GUI, "", $TabView_EEPVersions)
+					Local $aHit = _GUICtrlTab_HitTest($TabView_EEPVersions, $iX - $aPos[0], $iY - $aPos[1])
+					$EEPVersionRightClicked = $aHit[0] + 1 ;Index des angeklickten Tabs
+
 			EndSwitch
 
 	EndSwitch
