@@ -81,7 +81,7 @@ Global $EEPVersions_Nr[1]
 For $i = 1 To $EEPVersionsCount
 	;Prüfen, ob die EEP-Version (in der Registry) existiert
 	RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "Directory")
-	If Not @error Then
+	If Not @error And IniRead($IniFileName, $IniSectionsVersions & $i, "Hidden", "0")=="0" Then
 		_ArrayAdd($EEPVersions_Name, IniRead($IniFileName, $IniSectionsVersions & $i, "Name", ""))
 		_ArrayAdd($EEPVersions_RegPath, IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""))
 
@@ -669,7 +669,7 @@ Func Close()
 		For $v = 1 To $EEPVersionsCount
 			Local $Paths = $ResourcenFolder_Paths[$v]
 			Local $Descriptions = $ResourcenFolder_Descriptions[$v]
-			Local $Data[3 + UBound($Descriptions) * 2][2]
+			Local $Data[4 + UBound($Descriptions) * 2][2]
 			$Data[1][0] = "Name"
 			$Data[1][1] = '"' & IniRead($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$v], "Name", "") & '"'
 			$Data[2][0] = "RegPath"
@@ -678,11 +678,13 @@ Func Close()
 			$Data[3][1] = '"' & IniRead($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$v], "exeName", "") & '"'
 			$Data[4][0] = "Count"
 			$Data[4][1] = UBound($Descriptions) - 1
+			$Data[5][0] = "Hidden"
+			$Data[5][1] = IniRead($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$v], "Hidden", 0)
 			For $i = 1 To UBound($Descriptions) - 1
-				$Data[$i * 2 + 3][0] = "Path" & $i
-				$Data[$i * 2 + 3][1] = '"' & $Paths[$i] & '"'
-				$Data[$i * 2 + 4][0] = "Description" & $i
-				$Data[$i * 2 + 4][1] = '"' & $Descriptions[$i] & '"'
+				$Data[$i * 2 + 4][0] = "Path" & $i
+				$Data[$i * 2 + 4][1] = '"' & $Paths[$i] & '"'
+				$Data[$i * 2 + 5][0] = "Description" & $i
+				$Data[$i * 2 + 5][1] = '"' & $Descriptions[$i] & '"'
 			Next
 			IniWriteSection($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$v], $Data)
 		Next
