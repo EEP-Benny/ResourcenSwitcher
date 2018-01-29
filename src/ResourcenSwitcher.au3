@@ -56,6 +56,14 @@ Global $TxtFilesName = "ResourcenSwitcher 2.txt"
 
 Global $Restart = False ; Flag is set to True if a Restart is wanted
 
+;Einzelstart prüfen
+If WinExists($ToolName) Then
+	If $IDNO = MsgBox($MB_YESNO + $MB_ICONWARNING + $MB_DEFBUTTON2, $ToolName, $ToolName & " läuft bereits." & @CRLF & "Soll das Programm trotzdem nochmal gestartet werden?") Then
+		WinActivate($ToolName)
+		Exit
+	EndIf
+EndIf
+
 ;Schreibrechte prüfen
 Local $tempFileName = _TempFile(@ScriptDir, "~")
 Local $tempFile = FileOpen($tempFileName, 2)
