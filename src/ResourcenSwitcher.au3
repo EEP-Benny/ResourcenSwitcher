@@ -86,6 +86,7 @@ Global $HiddenEEPVersions_Nr[1]
 Global $EEPVersions_Name[1]
 Global $EEPVersions_RegPath[1]
 Global $EEPVersions_HasRegResBase[1]
+Global $EEPVersions_ExeFilePath[1]
 Global $EEPVersions_Nr[1]
 For $i = 1 To $EEPVersionsCount
 	;Prüfen, ob die EEP-Version (in der Registry) existiert
@@ -95,8 +96,12 @@ For $i = 1 To $EEPVersionsCount
 		_ArrayAdd($HiddenEEPVersions_Nr, $i)
 		ContinueLoop
 	EndIf
+	Local $RegPath = IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", "")
+	Local $ExeFilePath = RegRead($RegPath, "Directory") & "\" & IniRead($IniFileName, $IniSectionsVersions & $i, "exeName", "muell.exe")
+	$ExeFilePath = StringRegExpReplace($ExeFilePath, "_?x64", "")
 	_ArrayAdd($EEPVersions_Name, IniRead($IniFileName, $IniSectionsVersions & $i, "Name", ""))
-	_ArrayAdd($EEPVersions_RegPath, IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""))
+	_ArrayAdd($EEPVersions_RegPath, $RegPath)
+	_ArrayAdd($EEPVersions_ExeFilePath, $ExeFilePath)
 
 	;Prüfen, ob "ResBase" in der Registry steht
 	RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "ResBase")
@@ -166,9 +171,10 @@ Global $ListView_ResourcenFolders
 Global $Buttons_Add[1]
 Global $Buttons_Edit[1]
 Global $Buttons_Delete[1]
+Global $Buttons_Start[1]
 For $i = 1 To $EEPVersionsCount
 	_ArrayAdd($TabItems_EEPVersions, GUICtrlCreateTabItem($EEPVersions_Name[$i]))
-	_GUIImageList_AddIcon($ImageList_EEPIcons, RegRead($EEPVersions_RegPath[$i], "Directory") & "\" & IniRead($IniFileName, $IniSectionsVersions & $EEPVersions_Nr[$i], "exeName", "muell.exe"), 0)
+	_GUIImageList_AddIcon($ImageList_EEPIcons, $EEPVersions_ExeFilePath[$i], 0)
 	_GUICtrlTab_SetItemImage($TabView_EEPVersions, $i - 1, $i - 1)
 
 	GUISetCoord(0, 0)
@@ -199,6 +205,13 @@ For $i = 1 To $EEPVersionsCount
 	GUICtrlSetOnEvent($Buttons_Delete[$i], "DeleteResourcenFolder")
 	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner aus der Liste entfernen")
 	GUICtrlSetImage(-1, @ScriptFullPath, -7, 0)
+
+	;Button EEP starten
+	_ArrayAdd($Buttons_Start, GUICtrlCreateButton("EEP Sta&rten", 0, 0, 25, 25, $BS_ICON))
+	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
+	GUICtrlSetOnEvent(-1, "StartEEP")
+	GUICtrlSetTip(-1, $EEPVersions_Name[$i] & " starten" &@CRLF & $EEPVersions_ExeFilePath[$i])
+	GUICtrlSetImage(-1, $EEPVersions_ExeFilePath[$i], 0, 0)
 
 Next
 
@@ -246,17 +259,20 @@ Global $Dummy_Edit = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "ShowGUIResourcenFolderEdit")
 Global $Dummy_Delete = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "DeleteResourcenFolder")
+Global $Dummy_Start = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "StartEEP")
 Global $Dummy_Copy = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "CopyEntry")
 Global $Dummy_Paste = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "PasteEntry")
 
-Local $accelKeys[7][2] = [ _
+Local $accelKeys[8][2] = [ _
 		["{F1}", $Label_Help], _
 		["{F5}", $Button_Update], _
 		["^n", $Dummy_Add], _
 		["{F2}", $Dummy_Edit], _
 		["{DEL}", $Dummy_Delete], _
+		["^r", $Dummy_Start], _
 		["^c", $Dummy_Copy], _
 		["^v", $Dummy_Paste] _
 		]
@@ -567,6 +583,12 @@ Func DeleteResourcenFolder()
 	EndIf
 EndFunc   ;==>DeleteResourcenFolder
 
+Func StartEEP()
+	Local $Filename = $EEPVersions_ExeFilePath[$EEPVersionAkt]
+	Local $Folder = StringRegExpReplace($Filename, "\\[^\\]*$", "")
+	ShellExecute($Filename, "", $Folder)
+EndFunc
+
 Func BrowsePath()
 	Local $Folder = FileSelectFolder("Resourcen-Ordner wählen", "", 4, RegRead($EEPRegPath, "Directory"), $ResourcenFolder_GUI)
 	If $Folder Then
@@ -670,7 +692,7 @@ EndFunc   ;==>DisplayResourcenFolders
 
 Func ResizeWindow()
 	Local $Width = IniRead($IniFileName, $IniSectionSettings, "Width", 760)
-	Local $Height = IniRead($IniFileName, $IniSectionSettings, "Height", 180)
+	Local $Height = IniRead($IniFileName, $IniSectionSettings, "Height", 210)
 	Local $Left = IniRead($IniFileName, $IniSectionSettings, "PosX", (@DesktopWidth - $Width) / 2)
 	Local $Top = IniRead($IniFileName, $IniSectionSettings, "PosY", (@DesktopHeight - $Height) / 2)
 	WinMove($GUI, "", $Left, $Top, $Width, $Height)
@@ -874,7 +896,7 @@ Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 		Case $WM_GETMINMAXINFO ; Die Fenstergröße abfragen, minimale Größe fürs verkleinern setzen
 			Local $MinMax = DllStructCreate("int ptReserved[2]; int ptMaxSize[2]; int ptMaxPosition[2]; int ptMinTrackSize[2]; int ptMaxTrackSize[2];", $lParam) ; DLLStruct auf den Pointer erstellen, zum bearbeiten der Werte
 			DllStructSetData($MinMax, 4, 500, 1) ; Minimal 500 Pixel breit
-			DllStructSetData($MinMax, 4, 180, 2) ; Minimal 180 Pixel hoch
+			DllStructSetData($MinMax, 4, 210, 2) ; Minimal 210 Pixel hoch
 	EndSwitch
 
 EndFunc   ;==>WM_NOTIFY
