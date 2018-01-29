@@ -118,6 +118,7 @@ Global $ResourcenFolder_Descriptions[1]
 Global $ResourcenFolder_Paths[1]
 
 Global $EntryToEdit = 0
+Global $EntryToLink = 0
 Global $CurrResFolderLink[$EEPVersionsCount + 1]
 Global $CurrResFolderReg[$EEPVersionsCount + 1]
 
@@ -333,15 +334,18 @@ Func SwitchRegistryTo($Index)
 EndFunc   ;==>SwitchRegistryTo
 
 Func SwitchLinkTo($Index)
-	If $LastHoveredItem[1] = 1 Then _GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $LastHoveredItem[0], $LinkColumnIcon[$LastHoveredItem[0]], 1)
-	_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $LastHoveredItem[0], $RegColumnIcon[$LastHoveredItem[0]], 0)
-	_GUICtrlListView_RedrawItems($ListView_ResourcenFolders, $LastHoveredItem[0], $LastHoveredItem[0])
+	If $LastHoveredItem[0] >= 0 Then
+		If $LastHoveredItem[1] = 1 Then _GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $LastHoveredItem[0], $LinkColumnIcon[$LastHoveredItem[0]], 1)
+		_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $LastHoveredItem[0], $RegColumnIcon[$LastHoveredItem[0]], 0)
+		_GUICtrlListView_RedrawItems($ListView_ResourcenFolders, $LastHoveredItem[0], $LastHoveredItem[0])
+	EndIf
 	Local $path = _GUICtrlListView_GetItemText($ListView_ResourcenFolders, $Index, 3)
 	Local $homeRes = RegRead($EEPRegPath, "Directory") & "\Resourcen"
 	If FileExists($homeRes) And Not DirIsLink(RegRead($EEPRegPath, "Directory"), "Resourcen") Then
 		If MsgBox(20, $ToolName, $homeRes & @CRLF & "ist noch ein vollwertiger Resourcen-Ordner, sodass an " & @CRLF & _
 				"seiner Stelle keine Verknüpfung erstellt werden kann." & @CRLF & @CRLF & _
 				"Soll der Resourcen-Ordner umbenannt werden?" & @CRLF & "Den neuen Pfad kannst du gleich festlegen.", Default, $GUI) = 6 Then
+			$EntryToLink = $Index
 			$EntryToEdit = _GUICtrlListView_FindInText($ListViews_ResourcenFolders[$EEPVersionAkt], $homeRes) + 1
 			WinSetTitle($ResourcenFolder_GUI, "", "Resourcen-Ordner umbenennen")
 			GUICtrlSetData($ResourcenFolder_Input_Path, $homeRes)
@@ -383,6 +387,7 @@ Func RenameResourcenFolder()
 	EndIf
 	DirMove($homeRes, $path)
 	EditResourcenFolder()
+	SwitchLinkTo($EntryToLink)
 EndFunc   ;==>RenameResourcenFolder
 
 
