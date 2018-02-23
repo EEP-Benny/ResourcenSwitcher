@@ -32,6 +32,7 @@
 #include <ButtonConstants.au3>
 #include <GuiButton.au3>
 #include <File.au3>
+#include <Misc.au3>
 #include "..\lib\StringCompareVersions.au3"
 #EndRegion - Include Parameters
 
@@ -87,6 +88,7 @@ Global $EEPVersions_Name[1]
 Global $EEPVersions_RegPath[1]
 Global $EEPVersions_HasRegResBase[1]
 Global $EEPVersions_ExeFilePath[1]
+Global $EEPVersions_DevExeFilePath[1]
 Global $EEPVersions_Nr[1]
 For $i = 1 To $EEPVersionsCount
 	;Prüfen, ob die EEP-Version (in der Registry) existiert
@@ -99,9 +101,11 @@ For $i = 1 To $EEPVersionsCount
 	Local $RegPath = IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", "")
 	Local $ExeFilePath = RegRead($RegPath, "Directory") & "\" & IniRead($IniFileName, $IniSectionsVersions & $i, "exeName", "muell.exe")
 	$ExeFilePath = StringRegExpReplace($ExeFilePath, "_?x64", "")
+	Local $DevExeFilePath = StringReplace($ExeFilePath, ".exe", "Dev.exe", -1)
 	_ArrayAdd($EEPVersions_Name, IniRead($IniFileName, $IniSectionsVersions & $i, "Name", ""))
 	_ArrayAdd($EEPVersions_RegPath, $RegPath)
 	_ArrayAdd($EEPVersions_ExeFilePath, $ExeFilePath)
+	_ArrayAdd($EEPVersions_DevExeFilePath, $DevExeFilePath)
 
 	;Prüfen, ob "ResBase" in der Registry steht
 	RegRead(IniRead($IniFileName, $IniSectionsVersions & $i, "RegPath", ""), "ResBase")
@@ -210,7 +214,11 @@ For $i = 1 To $EEPVersionsCount
 	_ArrayAdd($Buttons_Start, GUICtrlCreateButton("EEP Sta&rten", 0, 0, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent(-1, "StartEEP")
-	GUICtrlSetTip(-1, $EEPVersions_Name[$i] & " starten" &@CRLF & $EEPVersions_ExeFilePath[$i])
+	Local $Tiptext = $EEPVersions_Name[$i] & " starten" & @CRLF & $EEPVersions_ExeFilePath[$i]
+	If FileExists($EEPVersions_DevExeFilePath[$i]) Then
+		$Tiptext &= @CRLF & @CRLF & "Shift+Klick startet die Dev-Version" & @CRLF & $EEPVersions_DevExeFilePath[$i]
+	EndIf
+	GUICtrlSetTip(-1, $Tiptext)
 	GUICtrlSetImage(-1, $EEPVersions_ExeFilePath[$i], 0, 0)
 
 Next
@@ -585,9 +593,13 @@ EndFunc   ;==>DeleteResourcenFolder
 
 Func StartEEP()
 	Local $Filename = $EEPVersions_ExeFilePath[$EEPVersionAkt]
+	Local $ShiftKeyValueHex = "10"
+	If _IsPressed($ShiftKeyValueHex) And FileExists($EEPVersions_DevExeFilePath[$EEPVersionAkt]) Then
+		$Filename = $EEPVersions_DevExeFilePath[$EEPVersionAkt]
+	EndIf
 	Local $Folder = StringRegExpReplace($Filename, "\\[^\\]*$", "")
 	ShellExecute($Filename, "", $Folder)
-EndFunc
+EndFunc   ;==>StartEEP
 
 Func BrowsePath()
 	Local $Folder = FileSelectFolder("Resourcen-Ordner wählen", "", 4, RegRead($EEPRegPath, "Directory"), $ResourcenFolder_GUI)
