@@ -143,6 +143,8 @@ Local $Size = WinGetClientSize($TestGUI)
 Global $ClientDiff[2] = [500 - $Size[0], 300 - $Size[1]]
 GUIDelete($TestGUI)
 
+Global $MinWidth = 500
+Global $MinHeight = 210
 
 
 #Region - Main GUI
@@ -704,9 +706,11 @@ EndFunc   ;==>DisplayResourcenFolders
 
 Func ResizeWindow()
 	Local $Width = IniRead($IniFileName, $IniSectionSettings, "Width", 760)
-	Local $Height = IniRead($IniFileName, $IniSectionSettings, "Height", 210)
+	Local $Height = IniRead($IniFileName, $IniSectionSettings, "Height", $MinHeight)
 	Local $Left = IniRead($IniFileName, $IniSectionSettings, "PosX", (@DesktopWidth - $Width) / 2)
 	Local $Top = IniRead($IniFileName, $IniSectionSettings, "PosY", (@DesktopHeight - $Height) / 2)
+	If $Height < $MinHeight Then $Height = $MinHeight
+	If $Width < $MinWidth Then $Width = $MinWidth
 	WinMove($GUI, "", $Left, $Top, $Width, $Height)
 	If($Left < 0 Or $Left > @DesktopWidth - $Width Or $Top < 0 Or $Top > @DesktopHeight - $Height) And _
 			MsgBox(36, $ToolName, "Das Fenster scheint außerhalb des Bildschirms zu liegen." & @CRLF & "Soll es zurückgeholt werden?", Default, $GUI) = 6 Then
@@ -907,8 +911,8 @@ Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 	Switch $uMsg
 		Case $WM_GETMINMAXINFO ; Die Fenstergröße abfragen, minimale Größe fürs verkleinern setzen
 			Local $MinMax = DllStructCreate("int ptReserved[2]; int ptMaxSize[2]; int ptMaxPosition[2]; int ptMinTrackSize[2]; int ptMaxTrackSize[2];", $lParam) ; DLLStruct auf den Pointer erstellen, zum bearbeiten der Werte
-			DllStructSetData($MinMax, 4, 500, 1) ; Minimal 500 Pixel breit
-			DllStructSetData($MinMax, 4, 210, 2) ; Minimal 210 Pixel hoch
+			DllStructSetData($MinMax, 4, $MinWidth, 1)
+			DllStructSetData($MinMax, 4, $MinHeight, 2)
 	EndSwitch
 
 EndFunc   ;==>WM_NOTIFY
