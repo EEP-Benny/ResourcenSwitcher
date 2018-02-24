@@ -195,30 +195,30 @@ For $i = 1 To $EEPVersionsCount
 	_ArrayAdd($Buttons_Add, GUICtrlCreateButton("&Hinzufügen", 220, 0, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent($Buttons_Add[$i], "ShowGUIResourcenFolderAdd")
-	GUICtrlSetTip(-1, "Neuen Resourcen-Ordner zur Liste hinzufügen")
+	GUICtrlSetTip(-1, "Neuen Resourcen-Ordner zur Liste hinzufügen (Strg+N)")
 	GUICtrlSetImage(-1, @ScriptFullPath, -5, 0)
 
 	;Button Ändern
 	_ArrayAdd($Buttons_Edit, GUICtrlCreateButton("Ä&ndern", 0, 30, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent($Buttons_Edit[$i], "ShowGUIResourcenFolderEdit")
-	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner bearbeiten")
+	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner bearbeiten (F2)")
 	GUICtrlSetImage(-1, @ScriptFullPath, -6, 0)
 
 	;Button Löschen
 	_ArrayAdd($Buttons_Delete, GUICtrlCreateButton("&Löschen", 0, 30, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent($Buttons_Delete[$i], "DeleteResourcenFolder")
-	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner aus der Liste entfernen")
+	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner aus der Liste entfernen (Entf)")
 	GUICtrlSetImage(-1, @ScriptFullPath, -7, 0)
 
 	;Button EEP starten
 	_ArrayAdd($Buttons_Start, GUICtrlCreateButton("EEP Sta&rten", 0, 0, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent(-1, "StartEEP")
-	Local $Tiptext = $EEPVersions_Name[$i] & " starten" & @CRLF & $EEPVersions_ExeFilePath[$i]
+	Local $Tiptext = $EEPVersions_Name[$i] & " starten (Strg+R)" & @CRLF & $EEPVersions_ExeFilePath[$i]
 	If FileExists($EEPVersions_DevExeFilePath[$i]) Then
-		$Tiptext &= @CRLF & @CRLF & "Shift+Klick startet die Dev-Version" & @CRLF & $EEPVersions_DevExeFilePath[$i]
+		$Tiptext &= @CRLF & @CRLF & "Shift+Klick (Strg+Shift+R) startet die Dev-Version" & @CRLF & $EEPVersions_DevExeFilePath[$i]
 	EndIf
 	GUICtrlSetTip(-1, $Tiptext)
 	GUICtrlSetImage(-1, $EEPVersions_ExeFilePath[$i], 0, 0)
@@ -255,12 +255,13 @@ GUICtrlSetColor(-1, 0x0000FF)
 GUICtrlSetCursor(-1, 0)
 GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 GUICtrlSetOnEvent($Label_Help, "ShowHelp")
+GUICtrlSetTip(-1, "Öffnet die Anleitung im PDF-Format (F1)")
 
 ;Button Update
 Global $Button_Update = GUICtrlCreateButton("&Update", 33, -5, 24, 24, $BS_ICON)
 GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 GUICtrlSetOnEvent(-1, "Update")
-GUICtrlSetTip(-1, "Im Internet nach Informationen zu neuen EEP- und Programm-Versionen suchen")
+GUICtrlSetTip(-1, "Im Internet nach Informationen zu neuen EEP- und Programm-Versionen suchen (F5)")
 GUICtrlSetImage(-1, @ScriptFullPath, -8, 0)
 
 Global $Dummy_Add = GUICtrlCreateDummy()
@@ -276,13 +277,14 @@ GUICtrlSetOnEvent(-1, "CopyEntry")
 Global $Dummy_Paste = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "PasteEntry")
 
-Local $accelKeys[8][2] = [ _
+Local $accelKeys[9][2] = [ _
 		["{F1}", $Label_Help], _
 		["{F5}", $Button_Update], _
 		["^n", $Dummy_Add], _
 		["{F2}", $Dummy_Edit], _
 		["{DEL}", $Dummy_Delete], _
 		["^r", $Dummy_Start], _
+		["^+r", $Dummy_Start], _
 		["^c", $Dummy_Copy], _
 		["^v", $Dummy_Paste] _
 		]
