@@ -18,6 +18,8 @@
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\database_error.ico
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\link.ico
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\link_go.ico
+#AutoIt3Wrapper_Res_Icon_Add=..\icons\arrow_up.ico
+#AutoIt3Wrapper_Res_Icon_Add=..\icons\arrow_down.ico
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 #Region - Include Parameters
@@ -144,7 +146,7 @@ Global $ClientDiff[2] = [500 - $Size[0], 300 - $Size[1]]
 GUIDelete($TestGUI)
 
 Global $MinWidth = 500
-Global $MinHeight = 210
+Global $MinHeight = 270
 
 
 #Region - Main GUI
@@ -177,6 +179,8 @@ Global $ListView_ResourcenFolders
 Global $Buttons_Add[1]
 Global $Buttons_Edit[1]
 Global $Buttons_Delete[1]
+Global $Buttons_Up[1]
+Global $Buttons_Down[1]
 Global $Buttons_Start[1]
 For $i = 1 To $EEPVersionsCount
 	_ArrayAdd($TabItems_EEPVersions, GUICtrlCreateTabItem($EEPVersions_Name[$i]))
@@ -212,8 +216,22 @@ For $i = 1 To $EEPVersionsCount
 	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner aus der Liste entfernen (Entf)")
 	GUICtrlSetImage(-1, @ScriptFullPath, -7, 0)
 
+	;Button nach oben
+	_ArrayAdd($Buttons_Up, GUICtrlCreateButton("Nach oben verschieben", 0, 30, 25, 25, $BS_ICON))
+	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
+	GUICtrlSetOnEvent($Buttons_Up[$i], "MoveResourcenFolderUp")
+	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner in der Liste nach oben schieben (Strg+Pfeil nach oben)")
+	GUICtrlSetImage(-1, @ScriptFullPath, -16, 0)
+
+	;Button nach unten
+	_ArrayAdd($Buttons_Down, GUICtrlCreateButton("Nach unten verschieben", 0, 30, 25, 25, $BS_ICON))
+	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
+	GUICtrlSetOnEvent($Buttons_Down[$i], "MoveResourcenFolderDown")
+	GUICtrlSetTip(-1, "Ausgewählten Resourcen-Ordner in der Liste nach unten schieben (Strg+Pfeil nach unten)")
+	GUICtrlSetImage(-1, @ScriptFullPath, -17, 0)
+
 	;Button EEP starten
-	_ArrayAdd($Buttons_Start, GUICtrlCreateButton("EEP Sta&rten", 0, 0, 25, 25, $BS_ICON))
+	_ArrayAdd($Buttons_Start, GUICtrlCreateButton("EEP Sta&rten", 0, -60, 25, 25, $BS_ICON))
 	GUICtrlSetResizing(-1, $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	GUICtrlSetOnEvent(-1, "StartEEP")
 	Local $Tiptext = $EEPVersions_Name[$i] & " starten (Strg+R)" & @CRLF & $EEPVersions_ExeFilePath[$i]
@@ -270,6 +288,10 @@ Global $Dummy_Edit = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "ShowGUIResourcenFolderEdit")
 Global $Dummy_Delete = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "DeleteResourcenFolder")
+Global $Dummy_Up = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "MoveResourcenFolderUp")
+Global $Dummy_Down = GUICtrlCreateDummy()
+GUICtrlSetOnEvent(-1, "MoveResourcenFolderDown")
 Global $Dummy_Start = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "StartEEP")
 Global $Dummy_Copy = GUICtrlCreateDummy()
@@ -277,12 +299,14 @@ GUICtrlSetOnEvent(-1, "CopyEntry")
 Global $Dummy_Paste = GUICtrlCreateDummy()
 GUICtrlSetOnEvent(-1, "PasteEntry")
 
-Local $accelKeys[9][2] = [ _
+Local $accelKeys[11][2] = [ _
 		["{F1}", $Label_Help], _
 		["{F5}", $Button_Update], _
 		["^n", $Dummy_Add], _
 		["{F2}", $Dummy_Edit], _
 		["{DEL}", $Dummy_Delete], _
+		["^{UP}", $Dummy_Up], _
+		["^{DOWN}", $Dummy_Down], _
 		["^r", $Dummy_Start], _
 		["^+r", $Dummy_Start], _
 		["^c", $Dummy_Copy], _
@@ -594,6 +618,30 @@ Func DeleteResourcenFolder()
 		DisplayResourcenFolders($EEPVersionAkt)
 	EndIf
 EndFunc   ;==>DeleteResourcenFolder
+
+Func MoveResourcenFolderUp()
+	MoveResourcenFolder(-1)
+EndFunc   ;==>MoveResourcenFolderUp
+
+Func MoveResourcenFolderDown()
+	MoveResourcenFolder(+1)
+EndFunc   ;==>MoveResourcenFolderDown
+
+Func MoveResourcenFolder($offset)
+	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
+	Local $NewIndex = $SelectedIndex + $offset
+	Local $Paths = $ResourcenFolder_Paths[$EEPVersionAkt]
+	Local $Descriptions = $ResourcenFolder_Descriptions[$EEPVersionAkt]
+	If $NewIndex < 0 Or $NewIndex >= UBound($Paths) - 1 Then
+		Return
+	EndIf
+	_ArraySwap($Paths, $SelectedIndex + 1, $NewIndex + 1)
+	_ArraySwap($Descriptions, $SelectedIndex + 1, $NewIndex + 1)
+	$ResourcenFolder_Paths[$EEPVersionAkt] = $Paths
+	$ResourcenFolder_Descriptions[$EEPVersionAkt] = $Descriptions
+	DisplayResourcenFolders($EEPVersionAkt)
+	_GUICtrlListView_SetItemSelected($ListViews_ResourcenFolders[$EEPVersionAkt], $NewIndex)
+EndFunc   ;==>MoveResourcenFolder
 
 Func StartEEP()
 	Local $Filename = $EEPVersions_ExeFilePath[$EEPVersionAkt]
