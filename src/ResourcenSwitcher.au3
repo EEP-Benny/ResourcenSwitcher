@@ -18,8 +18,8 @@
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\database_error.ico
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\link.ico
 #AutoIt3Wrapper_Res_Icon_Add=..\icons\link_go.ico
-#AutoIt3Wrapper_Res_Icon_Add=..\icons\arrow_up.ico
-#AutoIt3Wrapper_Res_Icon_Add=..\icons\arrow_down.ico
+#AutoIt3Wrapper_Res_Icon_Add=..\icons\folder_up.ico
+#AutoIt3Wrapper_Res_Icon_Add=..\icons\folder_down.ico
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 #Region - Include Parameters
