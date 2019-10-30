@@ -628,11 +628,33 @@ Func MoveResourcenFolderDown()
 EndFunc   ;==>MoveResourcenFolderDown
 
 Func MoveResourcenFolder($offset)
-	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListViews_ResourcenFolders[$EEPVersionAkt], False)
+	Local $ListView = $ListViews_ResourcenFolders[$EEPVersionAkt]
+	Local $isTriggeredByHotkey = (@GUI_CtrlId = $Dummy_Down Or @GUI_CtrlId = $Dummy_Up)
+	Local $SelectedIndex = _GUICtrlListView_GetSelectedIndices($ListView, False)
+	If $SelectedIndex = "" Then
+		If Not $isTriggeredByHotkey Then
+			MsgBox(48, $ToolName, "Du musst einen Eintrag zum Verschieben auswählen", Default, $GUI)
+		EndIf
+		Return
+	EndIf
 	Local $NewIndex = $SelectedIndex + $offset
 	Local $Paths = $ResourcenFolder_Paths[$EEPVersionAkt]
 	Local $Descriptions = $ResourcenFolder_Descriptions[$EEPVersionAkt]
-	If $NewIndex < 0 Or $NewIndex >= UBound($Paths) - 1 Then
+	Local $Count = UBound($Paths) - 1
+	If _GUICtrlListView_GetItemCount($ListView) > $Count And _
+			($SelectedIndex = $Count Or $NewIndex = $Count) Then
+		; Make the temporary entry permanent
+		Local $ItemTextArray = _GUICtrlListView_GetItemTextArray($ListView, $Count)
+		Local $path = $ItemTextArray[4]
+		Local $Description = $ItemTextArray[3]
+		_ArrayAdd($Paths, $path)
+		_ArrayAdd($Descriptions, $Description)
+		$Count += 1
+	EndIf
+	If $NewIndex < 0 Or $NewIndex >= $Count Then
+		If Not $isTriggeredByHotkey Then
+			MsgBox(48, $ToolName, "Der gewählte Eintrag befindet sich bereits ganz am " & ($offset < 0 ? "Anfang" : "Ende") & " der Liste", Default, $GUI)
+		EndIf
 		Return
 	EndIf
 	_ArraySwap($Paths, $SelectedIndex + 1, $NewIndex + 1)
