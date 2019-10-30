@@ -1,7 +1,7 @@
 <div align="center">
 
 # ResourcenSwitcher
-![Screenshot](https://emaps-eep.de/images/modellfotos/resourcenswitcher25.png)
+![Screenshot](https://emaps-eep.de/images/modellfotos/resourcenswitcher26.png)
 
 Einfaches Wechseln zwischen mehreren EEP-Resourcenordnern
 
