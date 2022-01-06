@@ -43,7 +43,7 @@ Name: "{group}\{cm:UninstallProgram,ResourcenSwitcher 2}"; Filename: "{uninstall
 Name: "{commondesktop}\ResourcenSwitcher 2"; Filename: "{app}\ResourcenSwitcher2.exe"; Tasks: desktopicon
 
 [Run]
-Filename: "{app}\ResourcenSwitcher2.exe"; Description: "{cm:LaunchProgram,ResourcenSwitcher 2}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\ResourcenSwitcher2.exe"; Description: "{cm:LaunchProgram,ResourcenSwitcher 2}"; Flags: nowait postinstall shellexec skipifsilent
 
 [CustomMessages]
 english.DeleteSettings=Should the configuration file (where to find which resource folders) also be deleted?
