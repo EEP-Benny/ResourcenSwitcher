@@ -2,7 +2,7 @@
 #AutoIt3Wrapper_Icon=..\icons\ResSwitchmultiple.ico
 #AutoIt3Wrapper_Outfile=..\build\ResourcenSwitcher2.exe
 #AutoIt3Wrapper_Compression=4
-#AutoIt3Wrapper_Res_Fileversion=2.6.0.0
+#AutoIt3Wrapper_Res_Fileversion=2.6.1.0
 ;~ #AutoIt3Wrapper_Res_FileVersion_AutoIncrement=P
 #AutoIt3Wrapper_Res_Language=1031 ;German (Germany)
 #AutoIt3Wrapper_Res_Comment=
@@ -48,7 +48,7 @@ Opt("WinTitleMatchMode", 3) ; 3 = Exact title match
 #EndRegion - Options
 
 
-Global $ToolName = "ResourcenSwitcher 2.6"
+Global $ToolName = "ResourcenSwitcher 2.6.1"
 Global $EEPRegPath
 Global $AppFileName = StringReplace(StringReplace(@ScriptFullPath, ".au3", "", -1), ".exe", "", -1)
 
