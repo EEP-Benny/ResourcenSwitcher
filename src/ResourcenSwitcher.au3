@@ -44,6 +44,7 @@ Opt("GUICoordMode", 0)
 Opt("TrayIconHide", 1)
 Opt("GUICloseOnEsc", 0)
 Opt("MustDeclareVars", 1)
+Opt("WinTitleMatchMode", 3) ; 3 = Exact title match
 #EndRegion - Options
 
 
