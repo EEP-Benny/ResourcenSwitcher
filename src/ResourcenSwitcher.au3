@@ -123,6 +123,20 @@ Next
 $EEPVersionsCount = UBound($EEPVersions_Name) - 1
 Global $HiddenEEPVersionsCount = UBound($HiddenEEPVersions_Nr) - 1
 
+If($EEPVersionsCount < 1) Then
+	If($HiddenEEPVersionsCount >=1 ) Then
+		If 6 = MsgBox(4 + 32, $ToolName, "Alle gefundenen EEP-Versionen sind ausgeblendet." & @CRLF & "Sollen sie wieder eingeblendet werden?") Then
+			UnhideTabs()
+		EndIf
+	Else
+		If 6 = MsgBox(4 + 32, $ToolName, "Es scheint keine der bekannten EEP-Versionen installiert zu sein." & @CRLF & "Soll im Internet nach weiteren EEP-Versionen gesucht werden?") Then
+			Update()
+		EndIf
+	EndIf
+	Exit ;ohne EEP-Versionen kann das Programm nicht arbeiten. Wenn beim durch das Einblenden oder beim Update neue dazugekommen sind, wird vorher neu gestartet.
+EndIf
+
+
 Global $EEPVersionAkt = 1 ;wird später per SetVersion neu gesetzt
 Global $EEPVersionRightClicked = -1 ;wird bei einem Rechtsklick auf die Tabs gesetzt, damit das Kontextmenü weiß, wofür es gelten soll
 
