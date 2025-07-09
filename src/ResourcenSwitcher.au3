@@ -916,7 +916,12 @@ Func LinkGetRealDir($path, $Folder = "")
 		If UBound($out) > 1 Then
 			If $out[0] <> "DIR" Then
 				Local $offset = StringInStr($out[2], ":")
-				Return StringTrimLeft($out[2], $offset - 2)
+				If $offset > 0 Then
+					Return StringTrimLeft($out[2], $offset - 2)
+				Else
+					Local $offsetForNetworkDrive = StringInStr($out[2], '\\', 0, -1) ; Find the last occurence of a double backslash
+					Return StringTrimLeft($out[2], $offsetForNetworkDrive - 1)
+				EndIf
 			EndIf
 		EndIf
 	EndIf
