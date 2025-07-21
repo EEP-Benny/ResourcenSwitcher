@@ -80,7 +80,7 @@ FileClose($tempFile)
 FileDelete($tempFileName)
 
 Global $EEPVersionsCount = IniRead($IniFileName, $IniSectionSettings, "EEPVersionsCount", 0)
-If($EEPVersionsCount < 1) Then
+If ($EEPVersionsCount < 1) Then
 	If 6 = MsgBox(4 + 32, $ToolName, "Das Programm kennt noch keine EEP-Versionen, für die Resourcenordner gewechselt werden könnten." & @CRLF & "Soll im Internet danach gesucht werden?") Then
 		Update()
 	EndIf
@@ -124,8 +124,8 @@ Next
 $EEPVersionsCount = UBound($EEPVersions_Name) - 1
 Global $HiddenEEPVersionsCount = UBound($HiddenEEPVersions_Nr) - 1
 
-If($EEPVersionsCount < 1) Then
-	If($HiddenEEPVersionsCount >=1 ) Then
+If ($EEPVersionsCount < 1) Then
+	If ($HiddenEEPVersionsCount >= 1) Then
 		If 6 = MsgBox(4 + 32, $ToolName, "Alle gefundenen EEP-Versionen sind ausgeblendet." & @CRLF & "Sollen sie wieder eingeblendet werden?") Then
 			UnhideTabs()
 		EndIf
@@ -765,7 +765,7 @@ Func DisplayResourcenFolders($v = 1)
 		_ArrayAdd($RegIcons, $IconKeins)
 		_ArrayAdd($LinkIcons, $IconKeins)
 	Next
-	If($ResBase = $homeRes Or $ResBase = $LinkFolder) And $CurrResFolderLink[$v] < -1 Then
+	If ($ResBase = $homeRes Or $ResBase = $LinkFolder) And $CurrResFolderLink[$v] < -1 Then
 		$CurrResFolderReg[$v] = _GUICtrlListView_GetItemCount($ListViews_ResourcenFolders[$v])
 		$CurrResFolderLink[$v] = $CurrResFolderReg[$v]
 		GUICtrlCreateListViewItem("||Aktueller Resourcen-Ordner|" & $LinkFolder, $ListViews_ResourcenFolders[$v])
@@ -825,7 +825,7 @@ Func ResizeWindow()
 	If $Height < $MinHeight Then $Height = $MinHeight
 	If $Width < $MinWidth Then $Width = $MinWidth
 	WinMove($GUI, "", $Left, $Top, $Width, $Height)
-	If($Left < 0 Or $Left > @DesktopWidth - $Width Or $Top < 0 Or $Top > @DesktopHeight - $Height) And _
+	If ($Left < 0 Or $Left > @DesktopWidth - $Width Or $Top < 0 Or $Top > @DesktopHeight - $Height) And _
 			MsgBox(36, $ToolName, "Das Fenster scheint außerhalb des Bildschirms zu liegen." & @CRLF & "Soll es zurückgeholt werden?", Default, $GUI) = 6 Then
 		If $Width > @DesktopWidth Then $Width = @DesktopWidth
 		If $Height > @DesktopHeight Then $Height = @DesktopHeight
