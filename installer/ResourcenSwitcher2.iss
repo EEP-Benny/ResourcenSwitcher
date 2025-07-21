@@ -7,8 +7,8 @@
 ; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{BB7F91B4-894B-4C5A-BAB1-EF15F96CBC83}
 AppName=ResourcenSwitcher 2
-AppVerName=ResourcenSwitcher 2.6.1
-AppVersion=2.6.1
+AppVerName=ResourcenSwitcher 2.7
+AppVersion=2.7
 AppPublisher=Benjamin Hogl (BH2)
 AppPublisherURL=https://emaps-eep.de
 DefaultDirName={pf}\ResourcenSwitcher2
