@@ -34,6 +34,7 @@
 #include <ButtonConstants.au3>
 #include <GuiButton.au3>
 #include <File.au3>
+#include <WinApi.au3>
 #include <Misc.au3>
 #include "..\lib\StringCompareVersions.au3"
 #EndRegion - Include Parameters
@@ -429,21 +430,46 @@ Func SwitchLinkTo($Index)
 		MsgBox(48, $ToolName, $path & @CRLF & "ist kein Ordner und kann daher nicht als Linkziel festgelegt werden.", Default, $GUI)
 		Return
 	EndIf
-	If FileCreateNTFSLink($path, $homeRes, 1) Then
-		_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $CurrResFolderLink[$EEPVersionAkt], $IconKeins, 1)
-		$CurrResFolderLink[$EEPVersionAkt] = $Index
-		If LinkGetRealDir($homeRes) <> $path Then ;Falls der Link von LinkGetRealDir nicht richtig aufgelöst werden kann, den Pfad in eine versteckte Textdatei schreiben
-			If FileExists($homeRes & "\" & $TxtFilesName) Then FileSetAttrib($homeRes & "\" & $TxtFilesName, "-H")
-			Local $file = FileOpen($homeRes & "\" & $TxtFilesName, 2)
-			FileWrite($homeRes & "\" & $TxtFilesName, $path)
-			FileClose($file)
-			FileSetAttrib($homeRes & "\" & $TxtFilesName, "+H")
-		EndIf
-		SwitchRegistryTo(-1)
-	Else
-		MsgBox(48, $ToolName, "Um die Verknüpfung zu erstellen, sind Schreibrechte im EEP-Verzeichnis nötig." & @CRLF & "Bitte starte dieses Programm als Administrator oder gewähre die Schreibrechte manuell.", Default, $GUI)
+
+	If Not CreateLink($homeRes, $path) Then Return
+
+	_GUICtrlListView_SetItemImage($ListView_ResourcenFolders, $CurrResFolderLink[$EEPVersionAkt], $IconKeins, 1)
+	$CurrResFolderLink[$EEPVersionAkt] = $Index
+	If LinkGetRealDir($homeRes) <> $path Then ;Falls der Link von LinkGetRealDir nicht richtig aufgelöst werden kann, den Pfad in eine versteckte Textdatei schreiben
+		If FileExists($homeRes & "\" & $TxtFilesName) Then FileSetAttrib($homeRes & "\" & $TxtFilesName, "-H")
+		Local $file = FileOpen($homeRes & "\" & $TxtFilesName, 2)
+		FileWrite($homeRes & "\" & $TxtFilesName, $path)
+		FileClose($file)
+		FileSetAttrib($homeRes & "\" & $TxtFilesName, "+H")
 	EndIf
+	SwitchRegistryTo(-1)
 EndFunc   ;==>SwitchLinkTo
+
+Func CreateLink($from, $to)
+	If DirIsSymlink($from) Then DirRemove($from) ; CreateNTFSLink can't overwrite a symlink
+
+	; Create a Junction
+	If Not FileCreateNTFSLink($to, $from, $FC_OVERWRITE) Then
+		MsgBox(48, $ToolName, "Um die Verknüpfung zu erstellen, sind Schreibrechte im EEP-Verzeichnis nötig." & @CRLF & "Bitte starte dieses Programm als Administrator oder gewähre die Schreibrechte manuell.", Default, $GUI)
+		Return False
+	EndIf
+
+	; Check if the link that was just created can be accessed
+	If Not DirIsEmpty($from) Then Return True ; The junction works
+	If DirIsEmpty($to) Then Return True ; If the target directory is empty, it's not an error that the link was also empty
+
+	; If the Junction didn't work (i.e. on a network drive), try creating a symlink instead
+	DirRemove($from) ; _WinAPI_CreateSymbolicLink can't overwrite a junction
+	If Not _WinAPI_CreateSymbolicLink($from, $to, True) Then ; True = "The link target is a directory"
+		If _WinAPI_GetLastError() = 1314 Then
+			MsgBox(16, $ToolName, "Um einen Symlink zu erstellen, sind Administratorrechte nötig." & @CRLF & "Bitte starte dieses Programm als Administrator.", Default, $GUI)
+		Else
+			MsgBox(16, $ToolName, "Bei der Erstellung eines Symlinks ist ein unerwarteter Fehler aufgetreten:" & @CRLF & "[" & _WinAPI_GetLastError() & "] " & _WinAPI_GetLastErrorMessage(), Default, $GUI)
+		EndIf
+		Return False
+	EndIf
+	Return True
+EndFunc   ;==>CreateLink
 
 Func RenameResourcenFolder()
 	Local $homeRes = RegRead($EEPRegPath, "Directory") & "\Resourcen"
@@ -906,6 +932,11 @@ Func DirIsLink($path, $Folder = "")
 	Return False
 EndFunc   ;==>DirIsLink
 
+Func DirIsSymlink($path, $Folder = "")
+	Local $out = CMDdir($path, $Folder)
+	Return @error = 0 And $out[0] = "SYMLINKD"
+EndFunc   ;==>DirIsSymlink
+
 Func LinkGetRealDir($path, $Folder = "")
 	If FileExists($path & "\" & $TxtFilesName) Then
 		Local $DirPath = FileRead($path & "\" & $TxtFilesName)
@@ -927,6 +958,12 @@ Func LinkGetRealDir($path, $Folder = "")
 	EndIf
 	Return ""
 EndFunc   ;==>LinkGetRealDir
+
+Func DirIsEmpty($path)
+	Local $handle = FileFindFirstFile($path & "\*")
+	FileClose($handle)
+	Return $handle = -1 ; If no files were found, the handle is -1
+EndFunc   ;==>DirIsEmpty
 
 Func WM_NOTIFY($hWnd, $uMsg, $wParam, $lParam)
 	Local $hWndFrom, $iIDFrom, $iCode, $tNMHDR, $hWndListView, $tInfo
